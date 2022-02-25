@@ -4,15 +4,15 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class SignInClass (
-    @SerializedName("accessToken")
+    @SerializedName("access_token")
     @Expose
     val accessToken: String? = null,
 
-    @SerializedName("expires")
+    @SerializedName("expires_in")
     @Expose
     val expires: Int? = null,
 
-    @SerializedName("refreshToken")
+    @SerializedName("refresh_token")
     @Expose
-    val refreshToken: String? = null,
+    val refreshToken: String? = null
 )
