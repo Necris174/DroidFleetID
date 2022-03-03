@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">DroidFleetID</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_hint">Логин:</string>
+    <string name="authorization_button">Авторизоваться</string>
+    <string name="password_hint">Пароль:</string>
 </resources>

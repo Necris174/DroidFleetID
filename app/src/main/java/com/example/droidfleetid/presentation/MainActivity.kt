@@ -21,10 +21,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         lifecycleScope.launch {
-            val authorizationProperties = authorizationUseCase("genadich74","genadich")
-            Log.d("authorizationProperties", authorizationProperties.toString())
-            val user = authorizationProperties.accessToken?.let { getSettingsUseCase(it) }
-            Log.d("authorizationProperties", user.toString())
+
+            try {
+                val authorizationProperties = authorizationUseCase("genadich74","genadich")
+                Log.d("authorizationProperties", authorizationProperties.toString())
+                val user = authorizationProperties.accessToken?.let { getSettingsUseCase(it) }
+                Log.d("authorizationProperties", user.toString())
+            } catch (e: Exception) {
+            }
         }
 
     }
