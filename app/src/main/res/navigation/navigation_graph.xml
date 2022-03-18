@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/deviceList">
+
+    <fragment
+        android:id="@+id/deviceList"
+        android:name="com.example.droidfleetid.presentation.fragments.DeviceListFragment"
+        android:label="Устройства"
+        tools:layout="@layout/fragment_device_list" />
+    <fragment
+        android:id="@+id/reportFragment"
+        android:name="com.example.droidfleetid.presentation.fragments.ReportFragment"
+        android:label="Отчеты"
+        tools:layout="@layout/fragment_report" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.droidfleetid.presentation.fragments.SettingsFragment"
+        android:label="Настройки" />
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.example.droidfleetid.presentation.fragments.MapsFragment"
+        android:label="Карта"
+        tools:layout="@layout/fragment_maps" />
+</navigation>
