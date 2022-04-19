@@ -1,7 +1,9 @@
 package com.example.droidfleetid.data
 
+import com.example.droidfleetid.domain.entity.DeviceEntity
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import io.reactivex.Single
+import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.http.*
 
@@ -27,15 +29,15 @@ interface ApiService {
                              @Header("Content-Type") contentType: String = "application/json",
                              @Header("X-Client-Type") xClientType: String = "droidfleet",
                              @Header("Connection") connection: String = "close",
-                     @Header("Authorization") headers5: String): SettingsDto
+                             @Header("Authorization") headers5: String): SettingsDto
 
     @POST("tail")
-    suspend fun getTails (@Header("Accept") accept: String,
-                  @Header("Content-Type") contentType: String,
-                  @Header("X-Client-Type") xClientType: String,
-                  @Header("Connection") connection: String,
-                  @Header("Authorization") authorization: String,
-                     @Body body:SignInRequest): JsonObject
+    suspend fun getTails (@Header("Accept") accept: String = "application/json",
+                          @Header("Content-Type") contentType: String = "application/json",
+                          @Header("X-Client-Type") xClientType: String = "droidfleet",
+                          @Header("Connection") connection: String = "close",
+                          @Header("Authorization") authorization: String,
+                          @Body body:List<DeviceRequestItem>): List<TailsDto>
 
     @GET("track")
     suspend fun getTrack (@Header("Accept") accept: String = "application/json",

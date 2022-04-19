@@ -1,14 +1,26 @@
 package com.example.droidfleetid.presentation.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import com.example.droidfleetid.R
 import com.example.droidfleetid.databinding.FragmentDeviceListBinding
-import com.example.droidfleetid.domain.entity.Device
 import com.example.droidfleetid.presentation.DeviceListAdapter
+import com.example.droidfleetid.presentation.DroidFleetViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class DeviceListFragment : Fragment() {
 
@@ -18,6 +30,7 @@ class DeviceListFragment : Fragment() {
     private val binding: FragmentDeviceListBinding
         get() = _binding ?: throw RuntimeException("LoginFragment == null")
 
+    private val viewModel: DroidFleetViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,15 +42,10 @@ class DeviceListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        adapter.submitList(listOf(Device("12321","123444","23434",
-            "34535333",true,true,true,true,"qeqweq",
-            "123133","23123","21323","3123123"),Device("12321","123444","23434",
-            "34535333",true,true,true,true,"qeqweq",
-            "123133","23123","21323","3123123"),Device("12321","123444","23434",
-            "34535333",true,true,true,true,"qeqweq",
-            "123133","23123","21323","3123123"),Device("12321","123444","23434",
-            "34535333",true,true,true,true,"qeqweq",
-            "123133","23123","21323","3123123")))
+        viewModel.deviceEntityListLD.observe(viewLifecycleOwner){
+            adapter.submitList(it)
+        }
+
     }
 
     private fun setupRecyclerView(){

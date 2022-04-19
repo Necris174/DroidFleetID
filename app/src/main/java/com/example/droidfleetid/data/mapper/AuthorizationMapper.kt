@@ -5,11 +5,7 @@ import com.example.droidfleetid.domain.entity.AuthorizationProperties
 
 class AuthorizationMapper {
 
-    fun mapSignInClasstoAuthorizationProperties(sic: SignInClass): AuthorizationProperties{
-        return AuthorizationProperties(
-            accessToken = sic.accessToken,
-            expires = sic.expires,
-            refreshToken = sic.refreshToken
-        )
+    fun mapSignInClassToAuthorizationProperties(sic: SignInClass): AuthorizationProperties {
+        return AuthorizationProperties(sic.accessToken,sic.expires,sic.refreshToken)
     }
 }

@@ -1,10 +1,12 @@
 package com.example.droidfleetid.domain
 
-import com.example.droidfleetid.data.SettingsDto
-import com.example.droidfleetid.data.SignInClass
-import com.example.droidfleetid.data.TeilsDto
+import com.example.droidfleetid.data.DeviceRequestItem
+import com.example.droidfleetid.data.TailsDto
 import com.example.droidfleetid.domain.entity.AuthorizationProperties
-import com.example.droidfleetid.domain.entity.Device
+import com.example.droidfleetid.domain.entity.DeviceEntity
+import com.google.gson.JsonObject
+import org.json.JSONArray
+import org.json.JSONObject
 
 interface DFRepository {
 
@@ -12,8 +14,8 @@ interface DFRepository {
 
     suspend fun refreshToken (refreshToken: String): AuthorizationProperties
 
-    suspend fun getSettings (accessToken: String): SettingsDto
+    suspend fun getSettings (accessToken: String): List<DeviceEntity>
 
-    suspend fun  getTails (deviceList: List<Device>): TeilsDto
+    suspend fun  getTails (deviceList: List<DeviceRequestItem>, accessToken: String): List<TailsDto>
 
 }

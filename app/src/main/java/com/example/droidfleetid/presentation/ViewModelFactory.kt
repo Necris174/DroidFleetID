@@ -9,7 +9,7 @@ class ViewModelFactory(private val authorizationProperties: AuthorizationPropert
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass == DroidFleetViewModel::class.java) {
-            return DroidFleetViewModel(authorizationProperties) as T
+            return DroidFleetViewModel() as T
         }
         throw RuntimeException("Unknown view model $modelClass")
     }

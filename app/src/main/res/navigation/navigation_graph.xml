@@ -9,7 +9,14 @@
         android:id="@+id/deviceList"
         android:name="com.example.droidfleetid.presentation.fragments.DeviceListFragment"
         android:label="Устройства"
-        tools:layout="@layout/fragment_device_list" />
+        tools:layout="@layout/fragment_device_list" >
+        <action
+            android:id="@+id/action_deviceList_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+        <action
+            android:id="@+id/action_deviceList_to_reportFragment"
+            app:destination="@id/reportFragment" />
+    </fragment>
     <fragment
         android:id="@+id/reportFragment"
         android:name="com.example.droidfleetid.presentation.fragments.ReportFragment"

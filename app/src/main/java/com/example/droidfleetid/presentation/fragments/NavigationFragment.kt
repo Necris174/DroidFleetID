@@ -6,8 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -15,8 +16,8 @@ import com.example.droidfleetid.R
 import com.example.droidfleetid.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.presentation.DroidFleetViewModel
 import com.example.droidfleetid.presentation.MainActivity
-import com.example.droidfleetid.presentation.ViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlin.properties.Delegates
 
 
 /**
@@ -26,15 +27,17 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  */
 class NavigationFragment : Fragment() {
 
-    private var viewModel: DroidFleetViewModel? = null
-    private var accessToken: String? = null
-    private var refreshToken: String? = null
-    private var expire: Int? = null
+
+    private val viewModel: DroidFleetViewModel by activityViewModels()
+    private lateinit var accessToken: String
+    private lateinit var refreshToken: String
+    private var expire by Delegates.notNull<Int>()
 
     companion object {
         private const val ACCESS_TOKEN = "access_token"
         private const val REFRESH_TOKEN = "refresh_token"
         private const val EXPIRES = "expires"
+
 
         @JvmStatic
         fun newInstance(access_token: String?, refresh_token: String?, expire: Int?) =
@@ -52,16 +55,14 @@ class NavigationFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            accessToken = it.getString(ACCESS_TOKEN)
-            refreshToken = it.getString(REFRESH_TOKEN)
+            accessToken = it.getString(ACCESS_TOKEN).toString()
+            refreshToken = it.getString(REFRESH_TOKEN).toString()
             expire = it.getInt(EXPIRES)
         }
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory(AuthorizationProperties(accessToken, expire, refreshToken))
-        )[DroidFleetViewModel::class.java]
-
         Log.d("DROIDFLEETID11", "Параметры: $accessToken $refreshToken $expire")
+
+        viewModel.loadAllSettings(AuthorizationProperties(accessToken,expire,refreshToken))
+
     }
 
     override fun onCreateView(
@@ -72,7 +73,6 @@ class NavigationFragment : Fragment() {
         val navView: BottomNavigationView = root.findViewById(R.id.nav_view)
         val navController =
             (childFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment).navController
-        navView.setupWithNavController(navController)
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.reportFragment,
@@ -81,13 +81,14 @@ class NavigationFragment : Fragment() {
                 R.id.deviceList
             )
         )
+
         (activity as MainActivity).setupActionBarWithNavController(
             navController,
             appBarConfiguration
         )
-
-
+        navView.setupWithNavController(navController)
         return root
     }
+
 
 }

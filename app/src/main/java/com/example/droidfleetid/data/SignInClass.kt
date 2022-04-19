@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
 data class SignInClass (
     @SerializedName("access_token")
     @Expose
-    val accessToken: String? = null,
+    val accessToken: String,
 
     @SerializedName("expires_in")
     @Expose
-    val expires: Int? = null,
+    val expires: Int,
 
     @SerializedName("refresh_token")
     @Expose
-    val refreshToken: String? = null
+    val refreshToken: String
 )

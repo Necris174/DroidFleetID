@@ -5,13 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.droidfleetid.R
 import com.example.droidfleetid.domain.entity.Device
+import com.example.droidfleetid.domain.entity.DeviceEntity
 import com.example.droidfleetid.presentation.fragments.DeviceItemDiffCallback
 import com.example.droidfleetid.presentation.fragments.DeviceListViewHolder
 
-class DeviceListAdapter : ListAdapter<Device, DeviceListViewHolder>(DeviceItemDiffCallback()) {
+class DeviceListAdapter : ListAdapter<DeviceEntity, DeviceListViewHolder>(DeviceItemDiffCallback()) {
 
 
-    var onDeviceItemClickListener: ((Device) -> Unit)? = null
+    var onDeviceItemClickListener: ((DeviceEntity) -> Unit)? = null
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceListViewHolder {
