@@ -20,6 +20,7 @@ import com.example.droidfleetid.R
 import com.example.droidfleetid.databinding.FragmentDeviceListBinding
 import com.example.droidfleetid.presentation.DeviceListAdapter
 import com.example.droidfleetid.presentation.DroidFleetViewModel
+import com.example.droidfleetid.presentation.LiveDataDto
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class DeviceListFragment : Fragment() {
@@ -53,6 +54,9 @@ class DeviceListFragment : Fragment() {
             binding.rvDeviceList.adapter = adapter
             adapter.onDeviceItemClickListener = {
                   Toast.makeText(activity,"Нажатие на ${it.imei}",Toast.LENGTH_LONG).show()
+                viewModel.selectDevice(it)
                 }
             }
-        }
+
+
+}

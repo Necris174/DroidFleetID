@@ -26,6 +26,9 @@ class DroidFleetViewModel() : ViewModel() {
         e.message?.let { Log.d("Exception Login:", it) }
     }
 
+     val _selectedDevice = MutableLiveData<LiveDataDto<DeviceEntity>>()
+    val selectedDevice: LiveData<LiveDataDto<DeviceEntity>>
+        get() = _selectedDevice
 
     private val _deviceEntityListLD = MutableLiveData<List<DeviceEntity>>()
     val deviceEntityListLD: LiveData<List<DeviceEntity>>
@@ -77,6 +80,14 @@ class DroidFleetViewModel() : ViewModel() {
         accessToken: String
     ): List<TailsDto> {
         return getTailsUseCase(deviceEntity, accessToken)
+    }
+
+    fun selectDevice(device: DeviceEntity) {
+        _selectedDevice.value = LiveDataDto.Device(device)
+    }
+
+    fun resetSelectedDevice() {
+        _selectedDevice.value = LiveDataDto.Reset("reset")
     }
 
 

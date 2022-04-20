@@ -29,7 +29,6 @@ class ReportFragment : Fragment() {
         // Inflate the layout for this fragment
       val root = inflater.inflate(R.layout.fragment_report, container, false)
         root.findViewById<Button>(R.id.button).setOnClickListener {
-            findNavController().navigate(R.id.mapsFragment)
         }
         return root
     }

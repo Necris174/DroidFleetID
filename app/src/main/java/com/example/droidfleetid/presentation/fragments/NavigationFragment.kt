@@ -15,7 +15,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.droidfleetid.R
 import com.example.droidfleetid.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.presentation.DroidFleetViewModel
+import com.example.droidfleetid.presentation.LiveDataDto
 import com.example.droidfleetid.presentation.MainActivity
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlin.properties.Delegates
 
@@ -87,6 +90,15 @@ class NavigationFragment : Fragment() {
             appBarConfiguration
         )
         navView.setupWithNavController(navController)
+
+        viewModel.selectedDevice.observe(viewLifecycleOwner) {
+            when(it){
+                is LiveDataDto.Device ->  navView.selectedItemId = R.id.mapsFragment
+                is LiveDataDto.Reset -> Log.d("SELECTEDLIVEDATA", "NavigationFragment ${it.message}")
+            }
+
+
+        }
         return root
     }
 
