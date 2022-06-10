@@ -1,5 +1,6 @@
 package com.example.droidfleetid.presentation.fragments
 
+import android.security.keystore.UserNotAuthenticatedException
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,6 +14,8 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.lang.Exception
 
 class LoginFragmentViewModel : ViewModel() {
 
@@ -31,14 +34,14 @@ class LoginFragmentViewModel : ViewModel() {
     val authorizationToken: LiveData<Result<AuthorizationProperties>>
         get() = _authorizationToken
 
-    private var authorizationJob: Job? = null
+
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         e.message?.let { Log.d("Exception Login:", it) }
     }
 
 
     fun authorization(login: String?, password: String?) {
-        authorizationJob = viewModelScope.launch(exceptionHandler) {
+        viewModelScope.launch(exceptionHandler) {
             coroutineScope {
                 try {
                     val validLogin = parseLogin(login)
@@ -49,9 +52,9 @@ class LoginFragmentViewModel : ViewModel() {
                         _authorizationToken.value =
                             Result.Success(authorizationUseCase(validLogin, validPassword))
                     }
-                } catch (e: Exception) {
+                } catch (e: HttpException) {
                     _authorizationToken.value =
-                        Result.Error("$e:  Не удалось получить ответ от сервера")
+                        Result.Error("${e.code()}:  Не удалось получить ответ от сервера")
                 }
             }
         }

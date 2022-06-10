@@ -1,13 +1,12 @@
 package com.example.droidfleetid.presentation
 
+import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.droidfleetid.data.DFRepositoryImpl
 import com.example.droidfleetid.data.DeviceRequestItem
 import com.example.droidfleetid.data.TailsDto
+import com.example.droidfleetid.data.database.AppDataBase
 import com.example.droidfleetid.data.mapper.DeviceMapper
 import com.example.droidfleetid.domain.GetSettingsUseCase
 import com.example.droidfleetid.domain.GetTailsUseCase
@@ -15,13 +14,16 @@ import com.example.droidfleetid.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.domain.entity.DeviceEntity
 import kotlinx.coroutines.*
 
-class DroidFleetViewModel() : ViewModel() {
+class DroidFleetViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val db = AppDataBase.getInstanse(application)
+    val entityDtoList = db.droidFleetDao().getDeviceEntityList()
+
     private val dfRepository = DFRepositoryImpl()
     private val getSettingsUseCase = GetSettingsUseCase(dfRepository)
     private val getTailsUseCase = GetTailsUseCase(dfRepository)
     private val deviceMapper = DeviceMapper()
 
-    private var authorizationJob: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         e.message?.let { Log.d("Exception Login:", it) }
     }
@@ -35,15 +37,18 @@ class DroidFleetViewModel() : ViewModel() {
         get() = _deviceEntityListLD
 
     fun loadAllSettings(authorizationProperties: AuthorizationProperties) {
-        authorizationJob = viewModelScope.launch(exceptionHandler) {
+        viewModelScope.launch(exceptionHandler) {
             coroutineScope {
                 while (true) {
                     try {
+                        //Loading basic device information
                         val deviceEntityList = loadSettings(authorizationProperties.accessToken)
+                        //Geting account_id and imei
                         val deviceRequestItem = mutableListOf<DeviceRequestItem>()
                         deviceEntityList.map {
                             deviceRequestItem.add(DeviceRequestItem(it.account_id, it.imei))
                         }
+                        //Geting tails
                         val tailsDtoList =
                             getTails(deviceRequestItem, authorizationProperties.accessToken)
 
@@ -53,10 +58,12 @@ class DroidFleetViewModel() : ViewModel() {
                                     y.sensors = i.sensors
                                     y.status = i.status
                                     y.descr = i.descr
-                                    y.data = i.data
+                                    y.data = i.data!!
                                 }
                             }
                         }
+                        val deviceEntityDtoList = deviceEntityList.map { DeviceMapper().deviceEntityToDeviceEntiteDto(it)}
+                        db.droidFleetDao().insertDeviceEntityList(deviceEntityDtoList)
                         _deviceEntityListLD.value = deviceEntityList
                         Log.d("teilsDTO", "$deviceEntityList")
 

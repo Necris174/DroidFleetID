@@ -9,12 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.droidfleetid.R
 import com.example.droidfleetid.data.Datum
+import com.example.droidfleetid.domain.entity.DeviceEntity
 import com.example.droidfleetid.presentation.DroidFleetViewModel
 import com.example.droidfleetid.presentation.LiveDataDto
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 
 
 class MapsFragment : Fragment(), OnMapReadyCallback {
@@ -43,12 +42,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
         mMap.uiSettings.isZoomControlsEnabled = true
 
-        val coords = mutableListOf<LatLng>()
+        val coords = mutableListOf<DeviceEntity>()
         viewModel.deviceEntityListLD.observe(viewLifecycleOwner) { list ->
-            list.map { dataC -> dataC.data?.map {
-                if (it.coords!=null) coords.add(LatLng(it.coords!!.lat, it.coords!!.lon))
-                }
-            }
+            list.map { coords.add(it) }
         }
 
 
@@ -58,11 +54,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
             coords.map {
                 val sydney = it
-                mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-                builder.include(it)
+                val latlng = mapperDeviseEntityToLatLng(sydney)
+                if (latlng!= null){
+                    mMap.addMarker(MarkerOptions().position(latlng).title("adsad"))
+                    builder.include(latlng)
+                }
+
             }
             val bounds = builder.build()
-
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 120))
 
         viewModel.selectedDevice.observe(viewLifecycleOwner){ dto ->
             Log.d("SELECTEDLIVEDATA", "MapFragment $dto")
@@ -70,11 +70,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                     is LiveDataDto.Device -> {
                         Log.d("SELECTEDLIVEDATA", "MapFragment ${dto.data.data.toString()}")
                         lateinit var latLng: LatLng
-                        if(dto.data.data?.isEmpty() == true){
+                        if(dto.data.data.isEmpty()){
                             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 120))
                         }else {
-                            dto.data.data?.map {
-                                latLng = LatLng((it.coords?.lat) ?: 0.0, (it.coords?.lon) ?: 0.0)
+                            dto.data.data.map {
+                                latLng = LatLng((it.coords.lat), (it.coords.lon))
                             }
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
                         }
@@ -87,5 +87,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     override fun onPause() {
         super.onPause()
         viewModel.resetSelectedDevice()
+    }
+
+    private fun mapperDeviseEntityToLatLng(device: DeviceEntity): LatLng? {
+        if(device.data.isNotEmpty()){
+            val lat = device.data.last().coords.lat
+            val lon = device.data.last().coords.lon
+            return LatLng(lat,lon)
+        } else {
+         return  null
+        }
     }
 }

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  data class Datum (
     @SerializedName("coords")
     @Expose
-    var coords: Coords? = null,
+    var coords: Coords,
     @SerializedName("flags")
     @Expose
     var flags: Int? = null,
