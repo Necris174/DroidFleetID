@@ -13,7 +13,7 @@ abstract class AppDataBase : RoomDatabase() {
         private var db: AppDataBase? = null
         private const val DB_NAME = "droidfleet.db"
         private val LOCK = Any()
-        fun getInstanse(application: Application): AppDataBase {
+        fun getInstance(application: Application): AppDataBase {
             synchronized(LOCK) {
                 db?.let { return it }
                 val instance =

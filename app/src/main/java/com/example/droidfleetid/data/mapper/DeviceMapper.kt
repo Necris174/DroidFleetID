@@ -1,10 +1,15 @@
 package com.example.droidfleetid.data.mapper
 
+import android.util.Log
+import com.example.droidfleetid.data.Datum
 import com.example.droidfleetid.data.DeviceEntityDbModel
 import com.example.droidfleetid.data.SettingsDto
 import com.example.droidfleetid.domain.entity.Device
 import com.example.droidfleetid.domain.entity.DeviceEntity
+import com.example.droidfleetid.domain.entity.Sensor
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,7 +45,7 @@ class DeviceMapper {
         }
     }
 
-    fun deviceEntityToDeviceEntiteDto(deviceEntity: DeviceEntity): DeviceEntityDbModel {
+   private fun deviceEntityToDeviceEntitiesDbModel(deviceEntity: DeviceEntity): DeviceEntityDbModel {
         return DeviceEntityDbModel(
             account_id = deviceEntity.account_id,
             id = deviceEntity.id,
@@ -55,6 +60,33 @@ class DeviceMapper {
         )
 
     }
+
+    fun deviceEntityListToDeviceEntitiesDbModelList (deviceEntityList: List<DeviceEntity>) = deviceEntityList.map {
+        deviceEntityToDeviceEntitiesDbModel(it)
+    }
+
+    private fun deviceEntitiesDbModelToDeviceEntity(deviceEntityDbModel: DeviceEntityDbModel): DeviceEntity {
+        val datum  = Gson().fromJson(deviceEntityDbModel.data ,object: TypeToken<List<Datum>>(){}.type ) ?: emptyList<Datum>()
+        val sensors = Gson().fromJson(deviceEntityDbModel.sensors ,object: TypeToken<List<Sensor>>(){}.type ) ?: emptyList<Sensor>()
+        Log.d("Dbmodel", "$datum $sensors")
+        return DeviceEntity(
+            account_id = deviceEntityDbModel.account_id,
+            id = deviceEntityDbModel.id,
+            imei = deviceEntityDbModel.imei,
+            is_disabled = deviceEntityDbModel.is_disabled,
+            model = deviceEntityDbModel.model,
+            number = deviceEntityDbModel.number,
+            status = deviceEntityDbModel.status,
+            descr = deviceEntityDbModel.descr,
+            data = datum,
+            sensors = sensors
+        )
+    }
+
+    fun deviceEntitiesDbModelListToDeviceEntityList(deviceEntityDbModelList: List<DeviceEntityDbModel>) = deviceEntityDbModelList.map {
+        deviceEntitiesDbModelToDeviceEntity(it)
+    }
+
 
 
 }

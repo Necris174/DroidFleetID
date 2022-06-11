@@ -9,10 +9,7 @@ import com.example.droidfleetid.domain.GetSettingsUseCase
 
 
 class MainActivity : AppCompatActivity() {
-
-    private val dfRepository = DFRepositoryImpl()
-    private val authorizationUseCase = AuthorizationUseCase(dfRepository)
-    private val getSettingsUseCase = GetSettingsUseCase(dfRepository)
+    
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

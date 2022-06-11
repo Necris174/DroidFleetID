@@ -10,8 +10,8 @@ import com.example.droidfleetid.data.DeviceEntityDbModel
 @Dao
 interface DroidFleetDao {
     @Query("SELECT * FROM device_entities")
-   suspend fun getDeviceEntityList(): LiveData<List<DeviceEntityDbModel>>
+     fun getDeviceEntityList(): LiveData<List<DeviceEntityDbModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-   suspend fun insertDeviceEntityList(devices : List<DeviceEntityDbModel>)
+    suspend fun insertDeviceEntityList(devices : List<DeviceEntityDbModel>)
 }

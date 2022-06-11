@@ -8,21 +8,23 @@ import com.example.droidfleetid.data.DeviceRequestItem
 import com.example.droidfleetid.data.TailsDto
 import com.example.droidfleetid.data.database.AppDataBase
 import com.example.droidfleetid.data.mapper.DeviceMapper
+import com.example.droidfleetid.domain.GetDeviceEntityListUseCase
 import com.example.droidfleetid.domain.GetSettingsUseCase
 import com.example.droidfleetid.domain.GetTailsUseCase
+import com.example.droidfleetid.domain.StoreDeviceEntitiesUseCase
 import com.example.droidfleetid.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.domain.entity.DeviceEntity
 import kotlinx.coroutines.*
 
 class DroidFleetViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val db = AppDataBase.getInstanse(application)
-    val entityDtoList = db.droidFleetDao().getDeviceEntityList()
 
-    private val dfRepository = DFRepositoryImpl()
+    private val dfRepository = DFRepositoryImpl(application)
     private val getSettingsUseCase = GetSettingsUseCase(dfRepository)
     private val getTailsUseCase = GetTailsUseCase(dfRepository)
-    private val deviceMapper = DeviceMapper()
+    private val storeDeviceEntitiesUseCase = StoreDeviceEntitiesUseCase(dfRepository)
+    private val getDeviceEntityListUseCase = GetDeviceEntityListUseCase(dfRepository)
+
 
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         e.message?.let { Log.d("Exception Login:", it) }
@@ -32,12 +34,12 @@ class DroidFleetViewModel(application: Application) : AndroidViewModel(applicati
     val selectedDevice: LiveData<LiveDataDto<DeviceEntity>>
         get() = _selectedDevice
 
-    private val _deviceEntityListLD = MutableLiveData<List<DeviceEntity>>()
-    val deviceEntityListLD: LiveData<List<DeviceEntity>>
-        get() = _deviceEntityListLD
+    // Getting deviceEntity from the Database
+    val deviceEntityListLD = getDeviceEntityListUseCase()
+
 
     fun loadAllSettings(authorizationProperties: AuthorizationProperties) {
-        viewModelScope.launch(exceptionHandler) {
+        viewModelScope.launch(exceptionHandler+Dispatchers.IO) {
             coroutineScope {
                 while (true) {
                     try {
@@ -62,10 +64,8 @@ class DroidFleetViewModel(application: Application) : AndroidViewModel(applicati
                                 }
                             }
                         }
-                        val deviceEntityDtoList = deviceEntityList.map { DeviceMapper().deviceEntityToDeviceEntiteDto(it)}
-                        db.droidFleetDao().insertDeviceEntityList(deviceEntityDtoList)
-                        _deviceEntityListLD.value = deviceEntityList
-                        Log.d("teilsDTO", "$deviceEntityList")
+
+                        storeDeviceEntitiesUseCase(deviceEntityList)
 
                     } catch (e: Exception) {
                         Log.d("teilsDTO", "Ошибка: $e")

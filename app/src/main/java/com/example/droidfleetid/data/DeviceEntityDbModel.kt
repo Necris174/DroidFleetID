@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.example.droidfleetid.domain.entity.Sensor
 
 @Entity(tableName = "device_entities")
-class DeviceEntityDbModel(
+data class DeviceEntityDbModel(
     val account_id: String,
     val id: String,
     @PrimaryKey

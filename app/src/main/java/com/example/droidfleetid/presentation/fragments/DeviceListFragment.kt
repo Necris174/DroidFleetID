@@ -47,9 +47,9 @@ class DeviceListFragment : Fragment() {
         viewModel.deviceEntityListLD.observe(viewLifecycleOwner){
             adapter.submitList(it)
         }
-        viewModel.entityDtoList.observe(viewLifecycleOwner) {
-            Log.d("DATABASE", it.toString())
-        }
+//        viewModel.entityDtoList.observe(viewLifecycleOwner) {
+//            Log.d("DATABASE", it.toString())
+//        }
 
     }
 

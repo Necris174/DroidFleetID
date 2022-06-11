@@ -1,11 +1,9 @@
 package com.example.droidfleetid.presentation.fragments
 
+import android.app.Application
 import android.security.keystore.UserNotAuthenticatedException
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.droidfleetid.data.DFRepositoryImpl
 import com.example.droidfleetid.domain.AuthorizationUseCase
 import com.example.droidfleetid.domain.entity.AuthorizationProperties
@@ -17,9 +15,9 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.lang.Exception
 
-class LoginFragmentViewModel : ViewModel() {
+class LoginFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val dfRepository = DFRepositoryImpl()
+    private val dfRepository = DFRepositoryImpl(application)
     private val authorizationUseCase = AuthorizationUseCase(dfRepository)
 
     private val _errorInputLogin = MutableLiveData<Boolean>()
