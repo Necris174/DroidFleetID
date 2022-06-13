@@ -3,18 +3,14 @@ package com.example.droidfleetid.data
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
+import com.example.droidfleetid.data.network.ApiFactory
 import com.example.droidfleetid.data.database.AppDataBase
 import com.example.droidfleetid.data.mapper.AuthorizationMapper
 import com.example.droidfleetid.data.mapper.DeviceMapper
 import com.example.droidfleetid.domain.DFRepository
 import com.example.droidfleetid.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.domain.entity.DeviceEntity
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import org.json.JSONArray
-import org.json.JSONObject
 
 class DFRepositoryImpl(
     application: Application

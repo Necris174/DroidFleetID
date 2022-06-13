@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.droidfleetid.R
-import com.example.droidfleetid.domain.entity.Device
 import com.example.droidfleetid.domain.entity.DeviceEntity
 import com.example.droidfleetid.presentation.fragments.DeviceItemDiffCallback
 import com.example.droidfleetid.presentation.fragments.DeviceListViewHolder

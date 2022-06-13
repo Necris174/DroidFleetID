@@ -1,10 +1,7 @@
-package com.example.droidfleetid.data
+package com.example.droidfleetid.data.network
 
-import com.example.droidfleetid.domain.entity.DeviceEntity
-import com.google.gson.JsonArray
+import com.example.droidfleetid.data.*
 import com.google.gson.JsonObject
-import org.json.JSONArray
-import org.json.JSONObject
 import retrofit2.http.*
 
 interface ApiService {
@@ -15,14 +12,16 @@ interface ApiService {
                        @Header("Content-Type") contentType: String = "application/json",
                        @Header("X-Client-Type") xClientType: String = "droidfleet",
                        @Header("Connection") connection: String = "close",
-                       @Body body:SignInRequest): SignInClass
+                       @Body body: SignInRequest
+    ): SignInClass
 
     @POST("refresh")
     suspend fun refreshToken (@Header("Accept") accept: String,
                       @Header("Content-Type") contentType: String,
                       @Header("X-Client-Type") xClientType: String,
                       @Header("Connection") connection: String,
-                      @Body body:SignInRequest) : JsonObject
+                      @Body body: SignInRequest
+    ) : JsonObject
 
     @GET("settings")
     suspend fun getSettings (@Header("Accept") accept: String = "application/json",
@@ -41,15 +40,15 @@ interface ApiService {
 
     @GET("track")
     suspend fun getTrack (@Header("Accept") accept: String = "application/json",
-                  @Header("Content-Type") contentType: String = "application/json",
-                  @Header("X-Client-Type") xClientType: String = "droidfleet",
-                  @Header("Connection") connection: String = "close",
-                  @Header("Authorization") authorization: String,
-                  @Query(DEVICE_IMEI) device_IMEI: String,
-                  @Query(ACCOUNT_ID) account_id: String,
-                  @Query(DATE_FROM) date_from: String,
-                  @Query(DATE_TO) date_to: String,
-                  @Query(SHIFT_VARS) shift_vars: String,
+                          @Header("Content-Type") contentType: String = "application/json",
+                          @Header("X-Client-Type") xClientType: String = "droidfleet",
+                          @Header("Connection") connection: String = "close",
+                          @Header("Authorization") authorization: String,
+                          @Query(DEVICE_IMEI) device_IMEI: String,
+                          @Query(ACCOUNT_ID) account_id: String,
+                          @Query(DATE_FROM) date_from: String,
+                          @Query(DATE_TO) date_to: String,
+                          @Query(SHIFT_VARS) shift_vars: String,
                   ): JsonObject
 
 

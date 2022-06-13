@@ -1,7 +1,5 @@
 package com.example.droidfleetid.domain
 
-import com.example.droidfleetid.data.SettingsDto
-import com.example.droidfleetid.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.domain.entity.DeviceEntity
 
 class GetSettingsUseCase(

@@ -5,9 +5,6 @@ import com.example.droidfleetid.data.DeviceRequestItem
 import com.example.droidfleetid.data.TailsDto
 import com.example.droidfleetid.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.domain.entity.DeviceEntity
-import com.google.gson.JsonObject
-import org.json.JSONArray
-import org.json.JSONObject
 
 interface DFRepository {
 

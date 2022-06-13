@@ -8,12 +8,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.droidfleetid.R
-import com.example.droidfleetid.data.Datum
 import com.example.droidfleetid.domain.entity.DeviceEntity
 import com.example.droidfleetid.presentation.DroidFleetViewModel
 import com.example.droidfleetid.presentation.LiveDataDto
-import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
 
 
 class MapsFragment : Fragment(), OnMapReadyCallback {
@@ -68,7 +72,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             Log.d("SELECTEDLIVEDATA", "MapFragment $dto")
                 when(dto){
                     is LiveDataDto.Device -> {
-                        Log.d("SELECTEDLIVEDATA", "MapFragment ${dto.data.data.toString()}")
+                        Log.d("SELECTEDLIVEDATA", "MapFragment ${dto.data.data}")
                         lateinit var latLng: LatLng
                         if(dto.data.data.isEmpty()){
                             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 120))
@@ -90,12 +94,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun mapperDeviseEntityToLatLng(device: DeviceEntity): LatLng? {
-        if(device.data.isNotEmpty()){
+        return if(device.data.isNotEmpty()){
             val lat = device.data.last().coords.lat
             val lon = device.data.last().coords.lon
-            return LatLng(lat,lon)
+            LatLng(lat,lon)
         } else {
-         return  null
+            null
         }
     }
 }
