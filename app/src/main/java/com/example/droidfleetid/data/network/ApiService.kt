@@ -1,6 +1,6 @@
 package com.example.droidfleetid.data.network
 
-import com.example.droidfleetid.data.*
+import com.example.droidfleetid.data.model.*
 import com.google.gson.JsonObject
 import retrofit2.http.*
 

@@ -1,4 +1,4 @@
-package com.example.droidfleetid.data
+package com.example.droidfleetid.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

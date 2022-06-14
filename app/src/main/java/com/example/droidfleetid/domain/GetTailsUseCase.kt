@@ -1,7 +1,7 @@
 package com.example.droidfleetid.domain
 
-import com.example.droidfleetid.data.DeviceRequestItem
-import com.example.droidfleetid.data.TailsDto
+import com.example.droidfleetid.data.model.DeviceRequestItem
+import com.example.droidfleetid.data.model.TailsDto
 
 class GetTailsUseCase(
     private val dfRepository: DFRepository) {

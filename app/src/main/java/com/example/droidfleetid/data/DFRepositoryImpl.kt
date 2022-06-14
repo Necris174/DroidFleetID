@@ -8,6 +8,9 @@ import com.example.droidfleetid.data.network.ApiFactory
 import com.example.droidfleetid.data.database.AppDataBase
 import com.example.droidfleetid.data.mapper.AuthorizationMapper
 import com.example.droidfleetid.data.mapper.DeviceMapper
+import com.example.droidfleetid.data.model.DeviceRequestItem
+import com.example.droidfleetid.data.model.SignInRequest
+import com.example.droidfleetid.data.model.TailsDto
 import com.example.droidfleetid.domain.DFRepository
 import com.example.droidfleetid.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.domain.entity.DeviceEntity

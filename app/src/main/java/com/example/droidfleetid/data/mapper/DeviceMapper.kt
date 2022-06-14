@@ -1,15 +1,14 @@
 package com.example.droidfleetid.data.mapper
 
 import android.util.Log
-import com.example.droidfleetid.data.Datum
-import com.example.droidfleetid.data.DeviceEntityDbModel
-import com.example.droidfleetid.data.SettingsDto
+import com.example.droidfleetid.data.model.Datum
+import com.example.droidfleetid.data.model.DeviceEntityDbModel
+import com.example.droidfleetid.data.model.SettingsDto
 import com.example.droidfleetid.domain.entity.Device
 import com.example.droidfleetid.domain.entity.DeviceEntity
 import com.example.droidfleetid.domain.entity.Sensor
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 

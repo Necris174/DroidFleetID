@@ -1,4 +1,4 @@
-package com.example.droidfleetid.data
+package com.example.droidfleetid.data.model
 
 import com.example.droidfleetid.domain.entity.Coords
 import com.google.gson.annotations.Expose

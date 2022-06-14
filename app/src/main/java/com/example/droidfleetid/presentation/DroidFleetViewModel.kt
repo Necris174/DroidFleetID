@@ -7,8 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.droidfleetid.data.DFRepositoryImpl
-import com.example.droidfleetid.data.DeviceRequestItem
-import com.example.droidfleetid.data.TailsDto
+import com.example.droidfleetid.data.model.DeviceRequestItem
+import com.example.droidfleetid.data.model.TailsDto
 import com.example.droidfleetid.domain.GetDeviceEntityListUseCase
 import com.example.droidfleetid.domain.GetSettingsUseCase
 import com.example.droidfleetid.domain.GetTailsUseCase

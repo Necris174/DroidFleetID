@@ -1,5 +1,6 @@
-package com.example.droidfleetid.data
+package com.example.droidfleetid.data.model
 
+import com.example.droidfleetid.data.model.Datum
 import com.example.droidfleetid.domain.entity.Sensor
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -13,7 +14,7 @@ data class TailsDto (
      var imei: String? = null,
     @SerializedName("status")
     @Expose
-    var status: String? = null ,
+    var status: String? = null,
     @SerializedName("descr")
     @Expose
     var descr: String? = null,

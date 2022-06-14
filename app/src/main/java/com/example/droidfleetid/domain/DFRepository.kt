@@ -1,8 +1,8 @@
 package com.example.droidfleetid.domain
 
 import androidx.lifecycle.LiveData
-import com.example.droidfleetid.data.DeviceRequestItem
-import com.example.droidfleetid.data.TailsDto
+import com.example.droidfleetid.data.model.DeviceRequestItem
+import com.example.droidfleetid.data.model.TailsDto
 import com.example.droidfleetid.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.domain.entity.DeviceEntity
 

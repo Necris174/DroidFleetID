@@ -1,6 +1,6 @@
 package com.example.droidfleetid.domain.entity
 
-import com.example.droidfleetid.data.Datum
+import com.example.droidfleetid.data.model.Datum
 
 
 data class DeviceEntity(
