@@ -1,10 +1,6 @@
 package com.example.droidfleetid.presentation.fragments
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,32 +17,21 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
 
 
 class MapsFragment : Fragment(), OnMapReadyCallback {
     private val viewModel: DroidFleetViewModel by activityViewModels()
     private lateinit var mMap: GoogleMap
-    private var markers: MutableList<Marker?> = mutableListOf()
     private var widthDefault =  0
     private var heightDefault = 0
-    private var radius = 0f
-
-
-    private val paintWhite = Paint().apply {
-        isAntiAlias = true
-        color = Color.WHITE
-    }
-    private val paintGreen = Paint().apply {
-        isAntiAlias = true
-        color = Color.GREEN
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        widthDefault = 50 * context.resources.displayMetrics.density.toInt()
-        heightDefault = 50 * context.resources.displayMetrics.density.toInt()
-        radius = widthDefault / 2f
+        widthDefault = 30 * context.resources.displayMetrics.density.toInt()
+        heightDefault = 30 * context.resources.displayMetrics.density.toInt()
     }
 
     override fun onCreateView(
@@ -68,28 +53,18 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         mMap = googleMap
 
         mMap.uiSettings.isZoomControlsEnabled = true
-        mMap.uiSettings.isCompassEnabled = true
-
-        val bitmap = Bitmap.createBitmap(widthDefault, heightDefault, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        canvas.drawCircle(radius, radius, radius, paintWhite)
-        canvas.drawCircle(radius, radius, radius - 2f, paintGreen)
-
-        val icon = BitmapDescriptorFactory.fromBitmap(bitmap)
-
         val builder = LatLngBounds.Builder()
+
         viewModel.deviceEntityListLD.observe(viewLifecycleOwner) { list ->
             mMap.clear()
             Log.d("GOOGLE_MAP", "MapFragment Updates markers")
-            list.map {
-                val sydney = it
-                val latlng = mapperDeviseEntityToLatLng(sydney)
+            list.map { entity ->
+                val latlng = mapperDeviseEntityToLatLng(entity)
                 if (latlng != null) {
-                    val myMarker = mMap.addMarker(
-                        MarkerOptions().position(latlng).icon(icon)
-                            .title("${sydney.model} ${sydney.number} ${sydney.data.first().coords.speed}")
+                    mMap.addMarker(
+                        MarkerOptions().position(latlng).icon(GreenMoveIcon(widthDefault,heightDefault).getIcon()).anchor(0.5f,0.5f)
+                            .title("${entity.model} ${entity.number}")
                     )
-                    markers.add(myMarker)
                     builder.include(latlng)
                 }
             }
@@ -99,8 +74,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 120))
 
         viewModel.selectedDevice.observe(viewLifecycleOwner){ dto ->
+            Log.d("SELECTEDLIVEDATA", "MapFragment $dto")
                 when(dto){
                     is LiveDataDto.Device -> {
+                        Log.d("SELECTEDLIVEDATA", "MapFragment ${dto.data.data}")
                         lateinit var latLng: LatLng
                         if(dto.data.data.isEmpty()){
                             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 120))
