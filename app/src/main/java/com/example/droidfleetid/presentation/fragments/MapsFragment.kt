@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.droidfleetid.R
@@ -20,18 +22,27 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 
-class MapsFragment : Fragment(), OnMapReadyCallback {
+class MapsFragment : Fragment(), OnMapReadyCallback  {
     private val viewModel: DroidFleetViewModel by activityViewModels()
     private lateinit var mMap: GoogleMap
     private var widthDefault =  0
     private var heightDefault = 0
+    private lateinit var mBottomSheetLayout: LinearLayout
+    private lateinit var informationLayout: LinearLayout
+    private lateinit var sheetBehavior: BottomSheetBehavior<LinearLayout>
+    private var deviceEntityList = mutableListOf<DeviceEntity>()
+
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        widthDefault = 30 * context.resources.displayMetrics.density.toInt()
-        heightDefault = 30 * context.resources.displayMetrics.density.toInt()
+        widthDefault = 40 * context.resources.displayMetrics.density.toInt()
+        heightDefault = 40 * context.resources.displayMetrics.density.toInt()
+        Log.d("density", widthDefault.toString())
+
     }
 
     override fun onCreateView(
@@ -39,7 +50,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_maps, container, false)
+        val  root = inflater.inflate(R.layout.fragment_maps, container, false)
+        mBottomSheetLayout = root.findViewById(R.id.persistent_bottom_sheet)
+        sheetBehavior = BottomSheetBehavior.from(mBottomSheetLayout)
+        informationLayout = root.findViewById(R.id.informationLayout)
+        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,20 +67,37 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
+        mMap.setOnMarkerClickListener { marker ->
+            informationLayout.removeAllViews()
+            deviceEntityList[2].sensors?.map {
+                val view = LayoutInflater.from(context).inflate(R.layout.item_sensor,informationLayout,false)
+                val textView = view.findViewById<TextView>(R.id.sensor_name)
+                val textView1 = view.findViewById<TextView>(R.id.sensor_value)
+                textView.text = it.name
+                textView1.text = it.value
+                Log.d("SELECTEDLIVEDATA", "MapFragment ${it.name} ${it.value}")
+                informationLayout.addView(view)
+            }
+
+            sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            false
+        }
         mMap.uiSettings.isZoomControlsEnabled = true
         val builder = LatLngBounds.Builder()
 
         viewModel.deviceEntityListLD.observe(viewLifecycleOwner) { list ->
+            deviceEntityList.addAll(list)
             mMap.clear()
             Log.d("GOOGLE_MAP", "MapFragment Updates markers")
             list.map { entity ->
-                val latlng = mapperDeviseEntityToLatLng(entity)
-                if (latlng != null) {
+
+                val latLng = mapperDeviseEntityToLatLng(entity)
+                if (latLng != null) {
                     mMap.addMarker(
-                        MarkerOptions().position(latlng).icon(GreenMoveIcon(widthDefault,heightDefault).getIcon()).anchor(0.5f,0.5f)
+                        MarkerOptions().position(latLng).icon(GreenMoveIcon(widthDefault,heightDefault).getIcon()).anchor(0.5f,0.5f)
                             .title("${entity.model} ${entity.number}")
                     )
-                    builder.include(latlng)
+                    builder.include(latLng)
                 }
             }
         }
@@ -107,4 +139,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             null
         }
     }
+
+
 }

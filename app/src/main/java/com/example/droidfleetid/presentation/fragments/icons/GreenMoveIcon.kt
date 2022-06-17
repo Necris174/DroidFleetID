@@ -9,6 +9,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
 class GreenMoveIcon(val widthDefault: Int, val heightDefault: Int) {
     private var radius = widthDefault / 2f
+    private var margin5 = widthDefault*0.05f
+    private var margin20 = widthDefault*0.25f
+
 
 
     private val paintWhite = Paint().apply {
@@ -24,8 +27,8 @@ class GreenMoveIcon(val widthDefault: Int, val heightDefault: Int) {
         val bitmap = Bitmap.createBitmap(widthDefault, heightDefault, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         canvas.drawCircle(radius, radius, radius, paintWhite)
-        canvas.drawCircle(radius, radius, radius - 4f, paintGreen)
-        canvas.drawRect(20f,   20f, widthDefault - 20f, heightDefault - 20f, paintWhite)
+        canvas.drawCircle(radius, radius, radius - margin5, paintGreen)
+        canvas.drawRect(margin20,   margin20, widthDefault - margin20, heightDefault - margin20, paintWhite)
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
