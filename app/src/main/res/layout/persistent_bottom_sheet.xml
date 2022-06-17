@@ -15,7 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="26dp"
         android:layout_marginTop="0dp"
-        android:background="#E8E5E5"
         android:gravity="bottom|center_horizontal"
         android:text="———"
         android:textAlignment="center"
@@ -25,7 +24,6 @@
         android:layout_width="match_parent"
         android:id="@+id/informationLayout"
         android:layout_height="wrap_content"
-        android:background="#E8E5E5"
         android:orientation="vertical">
 
     </LinearLayout>

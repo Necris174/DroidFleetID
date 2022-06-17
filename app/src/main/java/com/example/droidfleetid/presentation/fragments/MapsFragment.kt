@@ -21,6 +21,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
@@ -69,7 +70,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback  {
 
         mMap.setOnMarkerClickListener { marker ->
             informationLayout.removeAllViews()
-            deviceEntityList[2].sensors?.map {
+            val clickCount = marker.tag as? DeviceEntity
+            clickCount?.sensors?.map {
                 val view = LayoutInflater.from(context).inflate(R.layout.item_sensor,informationLayout,false)
                 val textView = view.findViewById<TextView>(R.id.sensor_name)
                 val textView1 = view.findViewById<TextView>(R.id.sensor_value)
@@ -78,7 +80,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback  {
                 Log.d("SELECTEDLIVEDATA", "MapFragment ${it.name} ${it.value}")
                 informationLayout.addView(view)
             }
-
             sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             false
         }
@@ -96,7 +97,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback  {
                     mMap.addMarker(
                         MarkerOptions().position(latLng).icon(GreenMoveIcon(widthDefault,heightDefault).getIcon()).anchor(0.5f,0.5f)
                             .title("${entity.model} ${entity.number}")
-                    )
+                    )?.tag = entity
                     builder.include(latLng)
                 }
             }
