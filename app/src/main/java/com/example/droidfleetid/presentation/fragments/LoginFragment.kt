@@ -5,6 +5,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +22,7 @@ class LoginFragment : Fragment() {
     private val binding: FragmentLoginBinding
         get() = _binding ?: throw RuntimeException("LoginFragment == null")
     lateinit var viewModel: LoginFragmentViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,6 +68,8 @@ class LoginFragment : Fragment() {
                 null
             }
             binding.textInputLogin.error = message
+            binding.authorizationButton.isEnabled = true
+            binding.progressBar.visibility  =  INVISIBLE
         }
         viewModel.errorInputPassword.observe(viewLifecycleOwner) {
             val message = if (it) {
@@ -73,11 +78,14 @@ class LoginFragment : Fragment() {
                 null
             }
             binding.textInputPassword.error = message
+            binding.authorizationButton.isEnabled = true
+            binding.progressBar.visibility  =  INVISIBLE
         }
 
         viewModel.authorizationToken.observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
+                    requireActivity().supportFragmentManager.popBackStack()
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.droid_fleet_container,
@@ -89,12 +97,17 @@ class LoginFragment : Fragment() {
                         ).commit()
                 }
                 is Result.Error -> {
+                    binding.authorizationButton.isEnabled = true
+                    binding.progressBar.visibility  =  INVISIBLE
                     binding.textView.text = it.message
 
                 }
             }
         }
         binding.authorizationButton.setOnClickListener {
+            binding.textView.text = null
+            binding.authorizationButton.isEnabled = false
+            binding.progressBar.visibility  =  VISIBLE
             viewModel.authorization(
                 binding.editTextLogin.text.toString(),
                 binding.editTextPassword.text.toString()

@@ -46,7 +46,6 @@ class LoginFragmentViewModel(application: Application) : AndroidViewModel(applic
                     val validPassword = parsePassword(password)
                     val fieldValid = validateInput(validLogin, validPassword)
                     if (fieldValid) {
-                        Log.d("dsad", "Прошло")
                         _authorizationToken.value =
                             Result.Success(authorizationUseCase(validLogin, validPassword))
                     }
@@ -76,7 +75,6 @@ class LoginFragmentViewModel(application: Application) : AndroidViewModel(applic
             _errorInputPassword.postValue(true)
             result = false
         }
-        Log.d("dsad", "result = $result login = $login")
         return result
     }
 

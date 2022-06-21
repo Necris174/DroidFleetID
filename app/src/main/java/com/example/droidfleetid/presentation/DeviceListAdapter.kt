@@ -24,10 +24,9 @@ class DeviceListAdapter : ListAdapter<DeviceEntity, DeviceListViewHolder>(Device
         val deviceItem = getItem(position)
 
         holder.deviceModel.text = deviceItem.model
-        holder.deviceNumer.text = deviceItem.number
+        holder.deviceNumber.text = deviceItem.number
         if(deviceItem.data.isEmpty()){
             holder.deviceSpeed.text = "S"
-            holder.deviceSpeed.textSize = 25F
         }else{
             holder.deviceSpeed.text = deviceItem.data.first().coords.speed.toString()
         }
