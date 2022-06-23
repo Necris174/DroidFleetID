@@ -53,7 +53,7 @@ class DeviceListFragment : Fragment() {
         adapter = DeviceListAdapter()
         binding.rvDeviceList.adapter = adapter
         adapter.onDeviceItemClickListener = {
-            Toast.makeText(activity, "Нажатие на ${it.imei}", Toast.LENGTH_LONG).show()
+
             viewModel.selectDevice(it)
         }
     }

@@ -27,24 +27,28 @@
                 android:id="@+id/icon_card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/speed"
                 android:src="@drawable/ic_moving"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/speed">
+                app:layout_constraintTop_toTopOf="parent">
 
             </ImageView>
+
             <TextView
                 android:id="@+id/text_speed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/icon_card"
+                android:layout_alignBottom="@+id/icon_card"
                 android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:paddingBottom="7dp"
-                android:textStyle="bold"
-                android:text="45"
-                android:textSize="25sp"
-                android:textColor="@color/white">
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="16dp"
+                android:paddingBottom="6dp"
+                android:text="46"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:textStyle="bold">
 
 
             </TextView>
