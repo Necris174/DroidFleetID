@@ -3,6 +3,7 @@ package com.example.droidfleetid.presentation.fragments
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ class LoginFragment : Fragment() {
     private val binding: FragmentLoginBinding
         get() = _binding ?: throw RuntimeException("LoginFragment == null")
     lateinit var viewModel: LoginFragmentViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,7 +66,10 @@ class LoginFragment : Fragment() {
             } else {
                 null
             }
+            TransitionManager.beginDelayedTransition(binding.rootLogin)
             binding.textInputLogin.error = message
+            binding.authorizationButton.isEnabled = true
+            binding.progressBar.visibility = View.INVISIBLE
         }
         viewModel.errorInputPassword.observe(viewLifecycleOwner) {
             val message = if (it) {
@@ -72,13 +77,18 @@ class LoginFragment : Fragment() {
             } else {
                 null
             }
+            TransitionManager.beginDelayedTransition(binding.rootLogin)
             binding.textInputPassword.error = message
+            binding.authorizationButton.isEnabled = true
+            binding.progressBar.visibility = View.INVISIBLE
         }
 
         viewModel.authorizationToken.observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
+                    requireActivity().supportFragmentManager.popBackStack()
                     requireActivity().supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in,R.anim.fade_out,R.anim.fade_in,R.anim.slide_out)
                         .replace(
                             R.id.droid_fleet_container,
                             NavigationFragment.newInstance(
@@ -89,12 +99,19 @@ class LoginFragment : Fragment() {
                         ).commit()
                 }
                 is Result.Error -> {
+                    TransitionManager.beginDelayedTransition(binding.rootLogin)
+                    binding.authorizationButton.isEnabled = true
+                    binding.progressBar.visibility = View.INVISIBLE
                     binding.textView.text = it.message
 
                 }
             }
         }
         binding.authorizationButton.setOnClickListener {
+            TransitionManager.beginDelayedTransition(binding.rootLogin)
+            binding.textView.text = null
+            binding.authorizationButton.isEnabled = false
+            binding.progressBar.visibility = View.VISIBLE
             viewModel.authorization(
                 binding.editTextLogin.text.toString(),
                 binding.editTextPassword.text.toString()
@@ -109,11 +126,4 @@ class LoginFragment : Fragment() {
         _binding = null
     }
 
-    companion object {
-        private const val ACCESS_TOKEN = "access_token"
-        private const val REFRESH_TOKEN = "refresh_token"
-        private const val EXPIRES = "expires"
-
-
-    }
 }

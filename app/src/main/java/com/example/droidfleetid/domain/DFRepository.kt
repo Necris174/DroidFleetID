@@ -1,12 +1,10 @@
 package com.example.droidfleetid.domain
 
-import com.example.droidfleetid.data.DeviceRequestItem
-import com.example.droidfleetid.data.TailsDto
+import androidx.lifecycle.LiveData
+import com.example.droidfleetid.data.model.DeviceRequestItem
+import com.example.droidfleetid.data.model.TailsDto
 import com.example.droidfleetid.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.domain.entity.DeviceEntity
-import com.google.gson.JsonObject
-import org.json.JSONArray
-import org.json.JSONObject
 
 interface DFRepository {
 
@@ -17,5 +15,9 @@ interface DFRepository {
     suspend fun getSettings (accessToken: String): List<DeviceEntity>
 
     suspend fun  getTails (deviceList: List<DeviceRequestItem>, accessToken: String): List<TailsDto>
+
+    suspend fun storeDeviceEntities(deviceList: List<DeviceEntity>)
+
+    fun getDeviceEntityList(): LiveData<List<DeviceEntity>>
 
 }

@@ -1,11 +1,11 @@
-package com.example.droidfleetid.data
+package com.example.droidfleetid.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.droidfleetid.domain.entity.Sensor
 
 @Entity(tableName = "device_entities")
-class DeviceEntityDbModel(
+data class DeviceEntityDbModel(
     val account_id: String,
     val id: String,
     @PrimaryKey

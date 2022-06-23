@@ -2,53 +2,56 @@ package com.example.droidfleetid.presentation
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.droidfleetid.data.DFRepositoryImpl
-import com.example.droidfleetid.data.DeviceRequestItem
-import com.example.droidfleetid.data.TailsDto
-import com.example.droidfleetid.data.database.AppDataBase
-import com.example.droidfleetid.data.mapper.DeviceMapper
+import com.example.droidfleetid.data.model.DeviceRequestItem
+import com.example.droidfleetid.data.model.TailsDto
+import com.example.droidfleetid.domain.GetDeviceEntityListUseCase
 import com.example.droidfleetid.domain.GetSettingsUseCase
 import com.example.droidfleetid.domain.GetTailsUseCase
+import com.example.droidfleetid.domain.StoreDeviceEntitiesUseCase
 import com.example.droidfleetid.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.domain.entity.DeviceEntity
 import kotlinx.coroutines.*
 
 class DroidFleetViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val db = AppDataBase.getInstanse(application)
-    val entityDtoList = db.droidFleetDao().getDeviceEntityList()
 
-    private val dfRepository = DFRepositoryImpl()
+    private val dfRepository = DFRepositoryImpl(application)
     private val getSettingsUseCase = GetSettingsUseCase(dfRepository)
     private val getTailsUseCase = GetTailsUseCase(dfRepository)
-    private val deviceMapper = DeviceMapper()
+    private val storeDeviceEntitiesUseCase = StoreDeviceEntitiesUseCase(dfRepository)
+    private val getDeviceEntityListUseCase = GetDeviceEntityListUseCase(dfRepository)
+
 
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         e.message?.let { Log.d("Exception Login:", it) }
     }
 
-     val _selectedDevice = MutableLiveData<LiveDataDto<DeviceEntity>>()
+     private val _selectedDevice = MutableLiveData<LiveDataDto<DeviceEntity>>()
     val selectedDevice: LiveData<LiveDataDto<DeviceEntity>>
         get() = _selectedDevice
 
-    private val _deviceEntityListLD = MutableLiveData<List<DeviceEntity>>()
-    val deviceEntityListLD: LiveData<List<DeviceEntity>>
-        get() = _deviceEntityListLD
+    // Getting deviceEntity from the Database
+    val deviceEntityListLD = getDeviceEntityListUseCase()
+
 
     fun loadAllSettings(authorizationProperties: AuthorizationProperties) {
-        viewModelScope.launch(exceptionHandler) {
+        viewModelScope.launch(exceptionHandler+Dispatchers.IO) {
             coroutineScope {
                 while (true) {
                     try {
                         //Loading basic device information
                         val deviceEntityList = loadSettings(authorizationProperties.accessToken)
-                        //Geting account_id and imei
+                        //Getting account_id and imei
                         val deviceRequestItem = mutableListOf<DeviceRequestItem>()
                         deviceEntityList.map {
                             deviceRequestItem.add(DeviceRequestItem(it.account_id, it.imei))
                         }
-                        //Geting tails
+                        //Getting tails
                         val tailsDtoList =
                             getTails(deviceRequestItem, authorizationProperties.accessToken)
 
@@ -62,13 +65,11 @@ class DroidFleetViewModel(application: Application) : AndroidViewModel(applicati
                                 }
                             }
                         }
-                        val deviceEntityDtoList = deviceEntityList.map { DeviceMapper().deviceEntityToDeviceEntiteDto(it)}
-                        db.droidFleetDao().insertDeviceEntityList(deviceEntityDtoList)
-                        _deviceEntityListLD.value = deviceEntityList
-                        Log.d("teilsDTO", "$deviceEntityList")
+
+                        storeDeviceEntitiesUseCase(deviceEntityList)
 
                     } catch (e: Exception) {
-                        Log.d("teilsDTO", "Ошибка: $e")
+                        Log.d("tailsDTO", "Ошибка: $e")
                     }
                     delay(10000)
                 }

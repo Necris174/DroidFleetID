@@ -1,4 +1,4 @@
-package com.example.droidfleetid.data
+package com.example.droidfleetid.data.model
 
 import com.example.droidfleetid.domain.entity.Device
 import com.example.droidfleetid.domain.entity.User

@@ -5,13 +5,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.droidfleetid.data.DeviceEntityDbModel
+import com.example.droidfleetid.data.model.DeviceEntityDbModel
 
 @Dao
 interface DroidFleetDao {
     @Query("SELECT * FROM device_entities")
-   suspend fun getDeviceEntityList(): LiveData<List<DeviceEntityDbModel>>
+     fun getDeviceEntityList(): LiveData<List<DeviceEntityDbModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-   suspend fun insertDeviceEntityList(devices : List<DeviceEntityDbModel>)
+    suspend fun insertDeviceEntityList(devices : List<DeviceEntityDbModel>)
 }

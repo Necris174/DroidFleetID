@@ -37,30 +37,26 @@ class DeviceListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDeviceListBinding.inflate(inflater,container,false)
+        _binding = FragmentDeviceListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        viewModel.deviceEntityListLD.observe(viewLifecycleOwner){
+        viewModel.deviceEntityListLD.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
-        viewModel.entityDtoList.observe(viewLifecycleOwner) {
-            Log.d("DATABASE", it.toString())
-        }
-
     }
 
-    private fun setupRecyclerView(){
-            adapter = DeviceListAdapter()
-            binding.rvDeviceList.adapter = adapter
-            adapter.onDeviceItemClickListener = {
-                  Toast.makeText(activity,"Нажатие на ${it.imei}",Toast.LENGTH_LONG).show()
-                viewModel.selectDevice(it)
-                }
-            }
+    private fun setupRecyclerView() {
+        adapter = DeviceListAdapter()
+        binding.rvDeviceList.adapter = adapter
+        adapter.onDeviceItemClickListener = {
+
+            viewModel.selectDevice(it)
+        }
+    }
 
 
 }
