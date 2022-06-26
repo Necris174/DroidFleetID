@@ -11,8 +11,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class DeviceMapper {
+class DeviceMapper @Inject constructor() {
 
 
     fun mapSettingsDtoClassToDeviceEntity(setDto: SettingsDto): List<DeviceEntity> {

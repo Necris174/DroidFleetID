@@ -1,5 +1,6 @@
 package com.example.droidfleetid.presentation.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,7 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.droidfleetid.R
 import com.example.droidfleetid.databinding.FragmentLoginBinding
+import com.example.droidfleetid.presentation.DFApp
 import com.example.droidfleetid.presentation.Result
+import javax.inject.Inject
 
 
 class LoginFragment : Fragment() {
@@ -20,14 +23,28 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding: FragmentLoginBinding
         get() = _binding ?: throw RuntimeException("LoginFragment == null")
+
+
     lateinit var viewModel: LoginFragmentViewModel
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as DFApp).component
+    }
+
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(this)[LoginFragmentViewModel::class.java]
+        viewModel = ViewModelProvider(this,viewModelFactory)[LoginFragmentViewModel::class.java]
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
 
