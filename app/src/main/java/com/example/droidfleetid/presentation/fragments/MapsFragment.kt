@@ -117,7 +117,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback  {
                             dto.data.data.map {
                                 latLng = LatLng((it.coords.lat), (it.coords.lon))
                             }
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12f))
                         }
                     }
                     is LiveDataDto.Reset ->  mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 120))

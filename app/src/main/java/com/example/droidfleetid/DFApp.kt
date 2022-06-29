@@ -1,4 +1,4 @@
-package com.example.droidfleetid.presentation
+package com.example.droidfleetid
 
 import android.app.Application
 import com.example.droidfleetid.di.DaggerApplicationComponent

@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.droidfleetid.R
 import com.example.droidfleetid.databinding.FragmentLoginBinding
-import com.example.droidfleetid.presentation.DFApp
+import com.example.droidfleetid.DFApp
 import com.example.droidfleetid.presentation.Result
 import javax.inject.Inject
 

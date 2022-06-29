@@ -34,12 +34,6 @@ class DeviceListAdapter : ListAdapter<DeviceEntity, DeviceListViewHolder>(Device
         }else{
             holder.deviceSpeed.text = deviceItem.data.first().coords.speed.toString()
         }
-        holder.deviceSpeed.animate()
-            .setDuration(3000)
-            .scaleX(2F)
-            .scaleY(2F)
-            .setInterpolator(BounceInterpolator())
-            .start()
 
         holder.itemView.setOnClickListener {
             onDeviceItemClickListener?.invoke(deviceItem)

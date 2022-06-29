@@ -2,11 +2,11 @@ package com.example.droidfleetid.di
 
 import android.app.Application
 import com.example.droidfleetid.presentation.fragments.LoginFragment
-import com.example.droidfleetid.presentation.fragments.LoginFragmentViewModel
 import com.example.droidfleetid.presentation.fragments.NavigationFragment
 import dagger.BindsInstance
 import dagger.Component
 
+@ApplicationScope
 @Component(modules = [DataModule::class, ViewModelModule::class])
 interface ApplicationComponent {
 

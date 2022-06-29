@@ -53,7 +53,6 @@ class DeviceListFragment : Fragment() {
         adapter = DeviceListAdapter()
         binding.rvDeviceList.adapter = adapter
         adapter.onDeviceItemClickListener = {
-
             viewModel.selectDevice(it)
         }
     }

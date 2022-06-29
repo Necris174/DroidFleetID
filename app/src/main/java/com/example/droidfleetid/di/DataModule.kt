@@ -10,34 +10,28 @@ import com.example.droidfleetid.domain.DFRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 @Module
 interface DataModule {
 
     @Binds
+    @ApplicationScope
     fun bindDFRepositoryImpl(impl: DFRepositoryImpl):DFRepository
 
     companion object {
 
         @Provides
+        @ApplicationScope
         fun provideDroidFleetDao(application: Application): DroidFleetDao {
             return AppDataBase.getInstance(application).droidFleetDao()
         }
 
-        @Provides
-        fun provideApiFactory (): Retrofit {
-            return Retrofit.Builder()
-                    .baseUrl("https://maps.locarus.ru/api/v2/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-        }
 
         @Provides
-        fun provideApiService(retrofit: Retrofit): ApiService{
-            return retrofit.create(ApiService::class.java)
+        @ApplicationScope
+        fun provideApiService(): ApiService{
+            return ApiFactory.service
         }
 
     }
