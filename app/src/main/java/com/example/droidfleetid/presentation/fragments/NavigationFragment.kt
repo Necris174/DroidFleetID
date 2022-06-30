@@ -16,7 +16,7 @@ import com.example.droidfleetid.R
 import com.example.droidfleetid.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.DFApp
 import com.example.droidfleetid.presentation.DroidFleetViewModel
-import com.example.droidfleetid.presentation.LiveDataDto
+import com.example.droidfleetid.presentation.SelectedDevice
 import com.example.droidfleetid.presentation.MainActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
@@ -107,8 +107,8 @@ class NavigationFragment : Fragment() {
 
         viewModel.selectedDevice.observe(viewLifecycleOwner) {
             when(it){
-                is LiveDataDto.Device ->  navView.selectedItemId = R.id.mapsFragment
-                is LiveDataDto.Reset -> Log.d("SELECTEDLIVEDATA", "NavigationFragment ${it.message}")
+                is SelectedDevice.Device ->  navView.selectedItemId = R.id.mapsFragment
+                is SelectedDevice.Reset -> Log.d("SELECTEDLIVEDATA", "NavigationFragment ${it.message}")
             }
 
 

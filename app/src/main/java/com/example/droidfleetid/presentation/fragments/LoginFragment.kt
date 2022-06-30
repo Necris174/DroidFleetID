@@ -24,7 +24,6 @@ class LoginFragment : Fragment() {
     private val binding: FragmentLoginBinding
         get() = _binding ?: throw RuntimeException("LoginFragment == null")
 
-
     lateinit var viewModel: LoginFragmentViewModel
 
     @Inject

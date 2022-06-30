@@ -23,20 +23,16 @@ class DroidFleetViewModel @Inject constructor(
     private val storeDeviceEntitiesUseCase: StoreDeviceEntitiesUseCase
    ) : ViewModel() {
 
-
-
+    private var device: DeviceEntity? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         e.message?.let { Log.d("Exception Login:", it) }
     }
 
-     private val _selectedDevice = MutableLiveData<LiveDataDto<DeviceEntity>>()
-    val selectedDevice: LiveData<LiveDataDto<DeviceEntity>>
+     private val _selectedDevice = MutableLiveData<SelectedDevice<DeviceEntity>>()
+    val selectedDevice: LiveData<SelectedDevice<DeviceEntity>>
         get() = _selectedDevice
 
     // Getting deviceEntity from the Database
-
-
-
     val deviceEntityListLD = getDeviceEntityListUseCase()
 
 
@@ -67,6 +63,10 @@ class DroidFleetViewModel @Inject constructor(
                                 }
                             }
                         }
+                        val deviceTracking = deviceEntityList.find { it.imei == device?.imei }
+                        if (deviceTracking != null) {
+                            selectDevice(deviceTracking)
+                        }
                         // Storing the device list
                         storeDeviceEntitiesUseCase(deviceEntityList)
 
@@ -93,11 +93,15 @@ class DroidFleetViewModel @Inject constructor(
     }
 
     fun selectDevice(device: DeviceEntity) {
-        _selectedDevice.value = LiveDataDto.Device(device)
+        _selectedDevice.postValue(SelectedDevice.Device(device))
     }
 
     fun resetSelectedDevice() {
-        _selectedDevice.value = LiveDataDto.Reset("reset")
+        _selectedDevice.value = SelectedDevice.Reset("reset")
+    }
+
+    fun deviceTracking(clickCount: DeviceEntity?) {
+        device = clickCount
     }
 
 
