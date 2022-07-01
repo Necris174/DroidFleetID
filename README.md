@@ -14,6 +14,7 @@ DroidFleet - это, в первую очередь, максимально уд
 * Room
 * Clean Architecture + MVVM
 * Dagger 2
+* Multi-module architecture
 ## Список экранов
 * Экран логина
 * Список устройств
