@@ -5,14 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.droidfleetid.data.model.DeviceRequestItem
-import com.example.droidfleetid.data.model.TailsDto
-import com.example.droidfleetid.domain.GetDeviceEntityListUseCase
-import com.example.droidfleetid.domain.GetSettingsUseCase
-import com.example.droidfleetid.domain.GetTailsUseCase
-import com.example.droidfleetid.domain.StoreDeviceEntitiesUseCase
-import com.example.droidfleetid.domain.entity.AuthorizationProperties
-import com.example.droidfleetid.domain.entity.DeviceEntity
+import com.example.data.model.DeviceRequestItem
+import com.example.domain.GetDeviceEntityListUseCase
+import com.example.domain.GetSettingsUseCase
+import com.example.domain.GetTailsUseCase
+import com.example.domain.StoreDeviceEntitiesUseCase
+import com.example.domain.entity.AuthorizationProperties
+import com.example.domain.entity.DeviceEntity
+import com.example.domain.entity.DeviceRequest
+import com.example.domain.entity.Tails
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -45,18 +46,18 @@ class DroidFleetViewModel @Inject constructor(
                         //Loading basic device information
                         val deviceEntityList = loadSettings(authorizationProperties.accessToken)
                         //Getting account_id and imei
-                        val deviceRequestItem = mutableListOf<DeviceRequestItem>()
+                        val deviceRequest = mutableListOf<DeviceRequest>()
                         deviceEntityList.map {
-                            deviceRequestItem.add(DeviceRequestItem(it.account_id, it.imei))
+                            deviceRequest.add(DeviceRequest(it.account_id, it.imei))
                         }
                         //Getting tails
                         val tailsDtoList =
-                            getTails(deviceRequestItem, authorizationProperties.accessToken)
+                            getTails(deviceRequest, authorizationProperties.accessToken)
 
                         for (i in tailsDtoList) {
                             for (y in deviceEntityList) {
                                 if (i.imei == y.imei) {
-                                    y.data = i.data!!
+                                    y.data = i.datumDto!!
                                     y.sensors = i.sensors
                                     y.status = i.status
                                     y.descr = i.descr
@@ -86,9 +87,9 @@ class DroidFleetViewModel @Inject constructor(
     }
 
     private suspend fun getTails(
-        deviceEntity: List<DeviceRequestItem>,
+        deviceEntity: List<DeviceRequest>,
         accessToken: String
-    ): List<TailsDto> {
+    ): List<Tails> {
         return getTailsUseCase(deviceEntity, accessToken)
     }
 

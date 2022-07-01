@@ -8,10 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.example.domain.entity.DeviceEntity
 import com.example.droidfleetid.R
-import com.example.droidfleetid.domain.entity.DeviceEntity
 import com.example.droidfleetid.presentation.DroidFleetViewModel
 import com.example.droidfleetid.presentation.SelectedDevice
 import com.example.droidfleetid.presentation.fragments.icons.GreenMoveIcon
@@ -69,14 +70,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback  {
 
         mMap.setOnMapClickListener {
             viewModel.deviceTracking(null)
-            Log.d("SELECTED", "MapFragment $it")
+            viewToast("Слежение отключено")
         }
 
         mMap.setOnMarkerClickListener { marker ->
             informationLayout.removeAllViews()
             val clickCount = marker.tag as? DeviceEntity
             viewModel.deviceTracking(clickCount)
-            clickCount?.model
+            viewToast("Слежение за ${clickCount?.model} ${clickCount?.number}")
             clickCount?.sensors?.map {
                 val view = LayoutInflater.from(context).inflate(R.layout.item_sensor,informationLayout,false)
                 val textView = view.findViewById<TextView>(R.id.sensor_name)
@@ -135,6 +136,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback  {
     override fun onPause() {
         super.onPause()
         viewModel.resetSelectedDevice()
+        viewModel.deviceTracking(null)
     }
 
     private fun mapperDeviseEntityToLatLng(device: DeviceEntity): LatLng? {
@@ -147,5 +149,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback  {
         }
     }
 
+    private fun viewToast(device: String){
+        Toast.makeText(activity,device,Toast.LENGTH_SHORT).show()
+    }
 
 }

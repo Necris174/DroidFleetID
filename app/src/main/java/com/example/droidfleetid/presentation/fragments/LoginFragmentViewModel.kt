@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.droidfleetid.domain.AuthorizationUseCase
-import com.example.droidfleetid.domain.entity.AuthorizationProperties
+import com.example.domain.AuthorizationUseCase
+import com.example.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.presentation.Result
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.coroutineScope
@@ -15,7 +15,8 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 class LoginFragmentViewModel @Inject constructor(
-    private val authorizationUseCase: AuthorizationUseCase) : ViewModel() {
+    private val authorizationUseCase: AuthorizationUseCase
+) : ViewModel() {
 
 
 

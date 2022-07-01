@@ -12,12 +12,12 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.droidfleetid.R
-import com.example.droidfleetid.domain.entity.AuthorizationProperties
+import com.example.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.DFApp
+import com.example.droidfleetid.R
 import com.example.droidfleetid.presentation.DroidFleetViewModel
-import com.example.droidfleetid.presentation.SelectedDevice
 import com.example.droidfleetid.presentation.MainActivity
+import com.example.droidfleetid.presentation.SelectedDevice
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
 import kotlin.properties.Delegates

@@ -4,9 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.droidfleetid.R
-import com.example.droidfleetid.data.DFRepositoryImpl
-import com.example.droidfleetid.domain.AuthorizationUseCase
-import com.example.droidfleetid.domain.GetSettingsUseCase
 import com.example.droidfleetid.presentation.fragments.LoginFragment
 
 

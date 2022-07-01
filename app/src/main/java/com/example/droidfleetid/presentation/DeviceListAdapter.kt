@@ -2,11 +2,9 @@ package com.example.droidfleetid.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.view.animation.BounceInterpolator
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ListAdapter
+import com.example.domain.entity.DeviceEntity
 import com.example.droidfleetid.R
-import com.example.droidfleetid.domain.entity.DeviceEntity
 import com.example.droidfleetid.presentation.fragments.DeviceItemDiffCallback
 import com.example.droidfleetid.presentation.fragments.DeviceListViewHolder
 
