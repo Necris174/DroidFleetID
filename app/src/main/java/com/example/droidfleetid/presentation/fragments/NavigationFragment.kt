@@ -51,13 +51,13 @@ class NavigationFragment : Fragment() {
 
 
         @JvmStatic
-        fun newInstance(access_token: String?, refresh_token: String?, expire: Int?) =
+        fun newInstance(access_token: String?, refresh_token: String?, expire: Long?) =
             NavigationFragment().apply {
                 arguments = Bundle().apply {
                     putString(ACCESS_TOKEN, access_token)
                     putString(REFRESH_TOKEN, refresh_token)
                     if (expire != null) {
-                        putInt(EXPIRES, expire)
+                        putLong(EXPIRES, expire)
                     }
                 }
             }

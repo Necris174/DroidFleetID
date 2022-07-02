@@ -1,12 +1,25 @@
 <resources>
     <!-- Reply Preference -->
     <string-array name="reply_entries">
-        <item>Reply</item>
-        <item>Reply to all</item>
+        <item>Dispatcher 1</item>
+        <item>Dispatcher 2</item>
     </string-array>
 
     <string-array name="reply_values">
-        <item>reply</item>
-        <item>reply_all</item>
+        <item>dispatcher_!</item>
+        <item>dispatcher2</item>
     </string-array>
+
+    <string-array name="maps_entries">
+        <item>Google</item>
+        <item>Yandex</item>
+        <item>OpenStreetMap</item>
+    </string-array>
+
+    <string-array name="maps_values">
+        <item>google!</item>
+        <item>yandex</item>
+        <item>openStreetMap</item>
+    </string-array>
+
 </resources>

@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.model.DeviceRequestItem
 import com.example.domain.GetDeviceEntityListUseCase
 import com.example.domain.GetSettingsUseCase
 import com.example.domain.GetTailsUseCase
@@ -18,7 +17,7 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class DroidFleetViewModel @Inject constructor(
-    private val getDeviceEntityListUseCase: GetDeviceEntityListUseCase,
+    getDeviceEntityListUseCase: GetDeviceEntityListUseCase,
     private val getSettingsUseCase: GetSettingsUseCase,
     private val getTailsUseCase: GetTailsUseCase,
     private val storeDeviceEntitiesUseCase: StoreDeviceEntitiesUseCase

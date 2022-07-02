@@ -25,4 +25,8 @@
     <string name="settings">Настройки</string>
     <string name="speed">speed</string>
     <string name="real_speed">Speed</string>
+    <string name="network_settings">Настройки подключения</string>
+    <string name="account">Учетная запись</string>
+    <string name="map_settings">Настройки карты</string>
+    <string name="exit_button">exit_button</string>
 </resources>
