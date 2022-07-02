@@ -1,25 +1,25 @@
 package com.example.droidfleetid.presentation.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.domain.entity.AuthorizationProperties
+import com.example.droidfleetid.DFApp
 import com.example.droidfleetid.R
-import com.example.droidfleetid.domain.entity.AuthorizationProperties
 import com.example.droidfleetid.presentation.DroidFleetViewModel
-import com.example.droidfleetid.presentation.LiveDataDto
 import com.example.droidfleetid.presentation.MainActivity
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.LatLng
+import com.example.droidfleetid.presentation.SelectedDevice
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
 
@@ -31,7 +31,15 @@ import kotlin.properties.Delegates
 class NavigationFragment : Fragment() {
 
 
-    private val viewModel: DroidFleetViewModel by activityViewModels()
+    private lateinit var viewModel: DroidFleetViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as DFApp).component
+    }
+
     private lateinit var accessToken: String
     private lateinit var refreshToken: String
     private var expire by Delegates.notNull<Int>()
@@ -43,20 +51,26 @@ class NavigationFragment : Fragment() {
 
 
         @JvmStatic
-        fun newInstance(access_token: String?, refresh_token: String?, expire: Int?) =
+        fun newInstance(access_token: String?, refresh_token: String?, expire: Long?) =
             NavigationFragment().apply {
                 arguments = Bundle().apply {
                     putString(ACCESS_TOKEN, access_token)
                     putString(REFRESH_TOKEN, refresh_token)
                     if (expire != null) {
-                        putInt(EXPIRES, expire)
+                        putLong(EXPIRES, expire)
                     }
                 }
             }
     }
 
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity(),viewModelFactory)[DroidFleetViewModel::class.java]
         arguments?.let {
             accessToken = it.getString(ACCESS_TOKEN).toString()
             refreshToken = it.getString(REFRESH_TOKEN).toString()
@@ -93,8 +107,8 @@ class NavigationFragment : Fragment() {
 
         viewModel.selectedDevice.observe(viewLifecycleOwner) {
             when(it){
-                is LiveDataDto.Device ->  navView.selectedItemId = R.id.mapsFragment
-                is LiveDataDto.Reset -> Log.d("SELECTEDLIVEDATA", "NavigationFragment ${it.message}")
+                is SelectedDevice.Device ->  navView.selectedItemId = R.id.mapsFragment
+                is SelectedDevice.Reset -> Log.d("SELECTEDLIVEDATA", "NavigationFragment ${it.message}")
             }
 
 

@@ -1,7 +1,7 @@
 package com.example.droidfleetid.presentation.fragments
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.droidfleetid.domain.entity.DeviceEntity
+import com.example.domain.entity.DeviceEntity
 
 class DeviceItemDiffCallback: DiffUtil.ItemCallback<DeviceEntity>() {
 

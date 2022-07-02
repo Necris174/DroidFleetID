@@ -1,35 +1,61 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/messages_header">
-
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
+    <PreferenceCategory app:title="@string/network_settings">
 
         <ListPreference
             app:defaultValue="reply"
             app:entries="@array/reply_entries"
             app:entryValues="@array/reply_values"
             app:key="reply"
-            app:title="@string/reply_title"
+            app:title="@string/account"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sync_header">
+    <PreferenceCategory app:title="@string/map_settings">
 
-        <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
+        <ListPreference
+            app:defaultValue="maps"
+            app:entries="@array/maps_entries"
+            app:entryValues="@array/maps_values"
+            app:key="map"
+            app:title="@string/account"
+            app:useSimpleSummaryProvider="true" />
 
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
+    </PreferenceCategory>
 
+    <PreferenceCategory app:title="Прочие">
+        <SwitchPreference
+            app:key="stops"
+            app:title="Остановки трека"
+            app:summaryOn="Показывать на карте"
+            app:summaryOff="Скрывать на карте"/>
+
+        <SwitchPreference
+            app:key="warnings"
+            app:title="Предупреждения трека"
+            app:summaryOn="Показывать на карте"
+            app:summaryOff="Скрывать на карте"/>
+
+
+        <SwitchPreference
+            app:key="check_points"
+            app:title="Контрольные точки трека"
+            app:summaryOn="Показывать на карте"
+            app:summaryOff="Скрывать на карте"/>
+
+        <SwitchPreference
+            app:key="offline"
+            app:title="Offline устройства"
+            app:summaryOn="Показывать на карте"
+            app:summaryOff="Скрывать на карте"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Учетная запись">
+        <Preference
+            app:title="Выход"
+            app:key="@string/exit_button"
+            />
     </PreferenceCategory>
 
 </PreferenceScreen>

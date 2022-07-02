@@ -8,12 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.example.domain.entity.DeviceEntity
 import com.example.droidfleetid.R
-import com.example.droidfleetid.domain.entity.DeviceEntity
 import com.example.droidfleetid.presentation.DroidFleetViewModel
-import com.example.droidfleetid.presentation.LiveDataDto
+import com.example.droidfleetid.presentation.SelectedDevice
 import com.example.droidfleetid.presentation.fragments.icons.GreenMoveIcon
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -21,7 +22,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
@@ -68,9 +68,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback  {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
+        mMap.setOnMapClickListener {
+            viewModel.deviceTracking(null)
+            viewToast("Слежение отключено")
+        }
+
         mMap.setOnMarkerClickListener { marker ->
             informationLayout.removeAllViews()
             val clickCount = marker.tag as? DeviceEntity
+            viewModel.deviceTracking(clickCount)
+            viewToast("Слежение за ${clickCount?.model} ${clickCount?.number}")
             clickCount?.sensors?.map {
                 val view = LayoutInflater.from(context).inflate(R.layout.item_sensor,informationLayout,false)
                 val textView = view.findViewById<TextView>(R.id.sensor_name)
@@ -106,22 +113,22 @@ class MapsFragment : Fragment(), OnMapReadyCallback  {
             val bounds = builder.build()
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 120))
 
-        viewModel.selectedDevice.observe(viewLifecycleOwner){ dto ->
-            Log.d("SELECTEDLIVEDATA", "MapFragment $dto")
-                when(dto){
-                    is LiveDataDto.Device -> {
-                        Log.d("SELECTEDLIVEDATA", "MapFragment ${dto.data.data}")
+        viewModel.selectedDevice.observe(viewLifecycleOwner){ device ->
+            Log.d("SELECTEDLIVEDATA", "MapFragment $device")
+                when(device){
+                    is SelectedDevice.Device -> {
+                        Log.d("SELECTEDLIVEDATA", "MapFragment ${device.data.data}")
                         lateinit var latLng: LatLng
-                        if(dto.data.data.isEmpty()){
+                        if(device.data.data.isEmpty()){
                             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 120))
                         }else {
-                            dto.data.data.map {
+                            device.data.data.map {
                                 latLng = LatLng((it.coords.lat), (it.coords.lon))
                             }
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14f))
                         }
                     }
-                    is LiveDataDto.Reset ->  mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 120))
+                    is SelectedDevice.Reset ->  mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 120))
                 }
         }
     }
@@ -129,6 +136,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback  {
     override fun onPause() {
         super.onPause()
         viewModel.resetSelectedDevice()
+        viewModel.deviceTracking(null)
     }
 
     private fun mapperDeviseEntityToLatLng(device: DeviceEntity): LatLng? {
@@ -141,5 +149,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback  {
         }
     }
 
+    private fun viewToast(device: String){
+        Toast.makeText(activity,device,Toast.LENGTH_SHORT).show()
+    }
 
 }

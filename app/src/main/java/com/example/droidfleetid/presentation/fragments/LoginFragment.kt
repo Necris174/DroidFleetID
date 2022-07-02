@@ -1,17 +1,23 @@
 package com.example.droidfleetid.presentation.fragments
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.domain.entity.AuthorizationProperties
+import com.example.droidfleetid.DFApp
 import com.example.droidfleetid.R
 import com.example.droidfleetid.databinding.FragmentLoginBinding
 import com.example.droidfleetid.presentation.Result
+import javax.inject.Inject
 
 
 class LoginFragment : Fragment() {
@@ -20,14 +26,30 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding: FragmentLoginBinding
         get() = _binding ?: throw RuntimeException("LoginFragment == null")
+
     lateinit var viewModel: LoginFragmentViewModel
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
+
+    private val component by lazy {
+        (requireActivity().application as DFApp).component
+    }
+
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(this)[LoginFragmentViewModel::class.java]
+        viewModel = ViewModelProvider(this,viewModelFactory)[LoginFragmentViewModel::class.java]
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -86,6 +108,7 @@ class LoginFragment : Fragment() {
         viewModel.authorizationToken.observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
+                   saveInSharedPreferences(it.data)
                     requireActivity().supportFragmentManager.popBackStack()
                     requireActivity().supportFragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.slide_in,R.anim.fade_out,R.anim.fade_in,R.anim.slide_out)
@@ -94,7 +117,7 @@ class LoginFragment : Fragment() {
                             NavigationFragment.newInstance(
                                 it.data.accessToken,
                                 it.data.refreshToken,
-                                it.data.expires
+                                it.data.expires.toLong()
                             )
                         ).commit()
                 }
@@ -118,6 +141,14 @@ class LoginFragment : Fragment() {
             )
         }
 
+    }
+
+    private fun saveInSharedPreferences(data: AuthorizationProperties) {
+                    sharedPreferences.edit()
+                        .putString("accessToken", data.accessToken)
+                        .putString("refreshToken", data.refreshToken)
+                        .putLong("expires", System.currentTimeMillis()+(data.expires.toLong()*1000)).apply()
+                        Log.d("FRAGMENT", "CREATE FRAGMENT")
     }
 
 
