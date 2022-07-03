@@ -107,10 +107,12 @@ class DeviceMapper @Inject constructor() {
     }
 
     private fun getDatum(datumDto: DatumDto): Datum {
+        val time = (System.currentTimeMillis()/1000).toInt()- datumDto.time!!
+        Log.d("GATUMTIME", "$time")
                 return Datum(
                     coords = datumDto.coords,
                     flags = datumDto.flags,
-                    time = datumDto.time)
+                    time = time)
     }
 
 

@@ -9,4 +9,6 @@ class DeviceListViewHolder(view: View): RecyclerView.ViewHolder(view){
     val deviceModel: TextView = view.findViewById(R.id.device_model)
     val deviceNumber: TextView = view.findViewById(R.id.device_number)
     val deviceSpeed: TextView = view.findViewById(R.id.text_speed)
+    val address: TextView = view.findViewById(R.id.address)
+    val lastDate: TextView = view.findViewById(R.id.last_date)
 }

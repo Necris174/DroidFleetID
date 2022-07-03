@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.DroidFleetID" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#294B6A</item>
-        <item name="colorPrimaryVariant">#294B6A</item>
+        <item name="colorPrimary">#193045</item>
+        <item name="colorPrimaryVariant">#183550</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>

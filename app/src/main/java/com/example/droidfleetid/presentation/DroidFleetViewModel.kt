@@ -73,7 +73,7 @@ class DroidFleetViewModel @Inject constructor(
                     } catch (e: Exception) {
                         Log.d("tailsDTO", "Ошибка: $e")
                     }
-                    delay(10000)
+                    delay(20000)
                 }
             }
         }
