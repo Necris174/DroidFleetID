@@ -20,4 +20,6 @@ interface DFRepository {
 
     fun getDeviceEntityList(): LiveData<List<DeviceEntity>>
 
+    suspend fun deleteEntityList()
+
 }

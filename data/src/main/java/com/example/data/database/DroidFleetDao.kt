@@ -14,4 +14,8 @@ interface DroidFleetDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDeviceEntityList(devices : List<DeviceEntityDbModel>)
+
+    @Query("DELETE FROM device_entities")
+    suspend fun deleteEntityList()
+
 }

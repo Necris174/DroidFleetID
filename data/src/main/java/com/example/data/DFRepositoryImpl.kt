@@ -51,7 +51,10 @@ class DFRepositoryImpl @Inject constructor(
         deviceMapper.deviceEntitiesDbModelListToDeviceEntityList(it)
     }
 
-
+    override suspend fun deleteEntityList() {
+        Log.d("DELETE", "DELETE ALL")
+        droidFleetDao.deleteEntityList()
+    }
 
 
 }

@@ -5,10 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.GetDeviceEntityListUseCase
-import com.example.domain.GetSettingsUseCase
-import com.example.domain.GetTailsUseCase
-import com.example.domain.StoreDeviceEntitiesUseCase
+import com.example.domain.*
 import com.example.domain.entity.AuthorizationProperties
 import com.example.domain.entity.DeviceEntity
 import com.example.domain.entity.DeviceRequest
@@ -17,17 +14,18 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class DroidFleetViewModel @Inject constructor(
-    getDeviceEntityListUseCase: GetDeviceEntityListUseCase,
+    private val getDeviceEntityListUseCase: GetDeviceEntityListUseCase,
     private val getSettingsUseCase: GetSettingsUseCase,
     private val getTailsUseCase: GetTailsUseCase,
-    private val storeDeviceEntitiesUseCase: StoreDeviceEntitiesUseCase
+    private val storeDeviceEntitiesUseCase: StoreDeviceEntitiesUseCase,
+    private val deleteEntityListUseCase: DeleteEntityListUseCase
    ) : ViewModel() {
 
     private var device: DeviceEntity? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         e.message?.let { Log.d("Exception Login:", it) }
     }
-
+     var isUserLoggedIn = true
      private val _selectedDevice = MutableLiveData<SelectedDevice<DeviceEntity>>()
     val selectedDevice: LiveData<SelectedDevice<DeviceEntity>>
         get() = _selectedDevice
@@ -35,12 +33,11 @@ class DroidFleetViewModel @Inject constructor(
     // Getting deviceEntity from the Database
     val deviceEntityListLD = getDeviceEntityListUseCase()
 
-
     fun loadAllSettings(authorizationProperties: AuthorizationProperties) {
 
         viewModelScope.launch(exceptionHandler+Dispatchers.IO) {
             coroutineScope {
-                while (true) {
+                while (isUserLoggedIn) {
                     try {
                         //Loading basic device information
                         val deviceEntityList = loadSettings(authorizationProperties.accessToken)
@@ -69,6 +66,10 @@ class DroidFleetViewModel @Inject constructor(
                         }
                         // Storing the device list
                         storeDeviceEntitiesUseCase(deviceEntityList)
+
+                        if(!isUserLoggedIn){
+                            deleteEntityList()
+                        }
 
                     } catch (e: Exception) {
                         Log.d("tailsDTO", "Ошибка: $e")
@@ -104,5 +105,11 @@ class DroidFleetViewModel @Inject constructor(
         device = clickCount
     }
 
+    fun deleteEntityList (){
+        viewModelScope.launch(exceptionHandler+Dispatchers.IO) {
+            deleteEntityListUseCase()
+        }
+
+    }
 
 }
