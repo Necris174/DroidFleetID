@@ -1,10 +1,7 @@
 package com.example.domain
 
 import androidx.lifecycle.LiveData
-import com.example.domain.entity.AuthorizationProperties
-import com.example.domain.entity.DeviceEntity
-import com.example.domain.entity.DeviceRequest
-import com.example.domain.entity.Tails
+import com.example.domain.entity.*
 
 interface DFRepository {
 
@@ -21,5 +18,7 @@ interface DFRepository {
     fun getDeviceEntityList(): LiveData<List<DeviceEntity>>
 
     suspend fun deleteEntityList()
+
+    suspend fun getAddressLayer(accessToken: String ,addressLayer: AddressLayer): List<Address>
 
 }

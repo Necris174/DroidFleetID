@@ -1,6 +1,7 @@
 package com.example.data.network
 
 import com.example.data.model.*
+import com.example.domain.entity.AddressLayer
 import com.example.domain.entity.DeviceRequest
 import com.google.gson.JsonObject
 import retrofit2.http.*
@@ -51,6 +52,14 @@ interface ApiService {
                           @Query(DATE_TO) date_to: String,
                           @Query(SHIFT_VARS) shift_vars: String,
                   ): JsonObject
+
+    @POST("geocoding/reverse")
+    suspend fun getAddress(@Header("Accept") accept: String = "application/json",
+                           @Header("Content-Type") contentType: String = "application/json",
+                           @Header("X-Client-Type") xClientType: String = "droidfleet",
+                           @Header("Connection") connection: String = "close",
+                           @Header("Authorization") authorization: String,
+                           @Body body: AddressRequestDto) : List<AddressLayerDto>
 
 
     companion object {

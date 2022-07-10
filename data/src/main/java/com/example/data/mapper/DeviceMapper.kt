@@ -1,10 +1,7 @@
 package com.example.data.mapper
 
 import android.util.Log
-import com.example.data.model.DatumDto
-import com.example.data.model.DeviceEntityDbModel
-import com.example.data.model.SettingsDto
-import com.example.data.model.TailsDto
+import com.example.data.model.*
 import com.example.domain.entity.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -37,12 +34,16 @@ class DeviceMapper @Inject constructor() {
         val blackDate = format.parse(device.black_date)
         val licenseBlackDate = format.parse(device.license_black_date)
         val currentDate = Date()
-        return if (device.is_licensed && device.is_unlimited) {
-            blackDate > currentDate
-        } else {
-            licenseBlackDate > currentDate
+        if (blackDate != null&&licenseBlackDate != null) {
+                return if (device.is_licensed && device.is_unlimited) {
+                    blackDate > currentDate
+                } else {
+                    licenseBlackDate > currentDate
+                }
         }
+        return false
     }
+
 
    private fun deviceEntityToDeviceEntitiesDbModel(deviceEntity: DeviceEntity): DeviceEntityDbModel {
         return DeviceEntityDbModel(
@@ -55,7 +56,8 @@ class DeviceMapper @Inject constructor() {
             status = deviceEntity.status,
             descr = deviceEntity.descr,
             data = Gson().toJson(deviceEntity.data),
-            sensors = Gson().toJson(deviceEntity.sensors)
+            sensors = Gson().toJson(deviceEntity.sensors),
+            address = deviceEntity.address
         )
 
     }
@@ -67,7 +69,6 @@ class DeviceMapper @Inject constructor() {
     private fun deviceEntitiesDbModelToDeviceEntity(deviceEntityDbModel: DeviceEntityDbModel): DeviceEntity {
         val datum  = Gson().fromJson(deviceEntityDbModel.data ,object: TypeToken<List<Datum>>(){}.type ) ?: emptyList<Datum>()
         val sensors = Gson().fromJson(deviceEntityDbModel.sensors ,object: TypeToken<List<Sensor>>(){}.type ) ?: emptyList<Sensor>()
-        Log.d("Dbmodel", "$datum $sensors")
         return DeviceEntity(
             account_id = deviceEntityDbModel.account_id,
             id = deviceEntityDbModel.id,
@@ -78,15 +79,16 @@ class DeviceMapper @Inject constructor() {
             status = deviceEntityDbModel.status,
             descr = deviceEntityDbModel.descr,
             data = datum,
-            sensors = sensors
+            sensors = sensors,
+            address = deviceEntityDbModel.address
         )
     }
 
-    fun deviceEntitiesDbModelListToDeviceEntityList(deviceEntityDbModelList: List<DeviceEntityDbModel>) = deviceEntityDbModelList.map {
+     fun deviceEntitiesDbModelListToDeviceEntityList(deviceEntityDbModelList: List<DeviceEntityDbModel>) = deviceEntityDbModelList.map {
         deviceEntitiesDbModelToDeviceEntity(it)
     }
 
-    fun mapTailsDtoToTails(tails: List<TailsDto>): List<Tails> {
+     fun mapTailsDtoToTails(tails: List<TailsDto>): List<Tails> {
         return tails.map { getTails(it) }
 
     }
@@ -107,12 +109,33 @@ class DeviceMapper @Inject constructor() {
     }
 
     private fun getDatum(datumDto: DatumDto): Datum {
-        val time = (System.currentTimeMillis()/1000).toInt()- datumDto.time!!
-        Log.d("GATUMTIME", "$time ${System.currentTimeMillis()}  ${datumDto.time}  ")
+        val time = (System.currentTimeMillis()/1000).toInt()+20- datumDto.time!!
                 return Datum(
                     coords = datumDto.coords,
                     flags = datumDto.flags,
                     time = time)
+    }
+
+    fun mapAddressLayerDtoToAddress(address: List<AddressLayerDto>): List<Address> {
+        Log.d("ADDRESS", address.first().displayName.toString())
+                    return   address.map {getAddress(it) }
+    }
+
+    private fun getAddress(address: AddressLayerDto) : Address {
+        val city = address.address?.city ?: ""
+        val country = address.address?.country ?: ""
+        val cityDistrict = address.address?.cityDistrict ?: ""
+        val houseNumber = address.address?.houseNumber ?: ""
+        val road = address.address?.road ?: ""
+        val suburb = address.address?.suburb ?: ""
+        return Address(city,country,cityDistrict,houseNumber,road, suburb)
+    }
+
+    fun mapAddressLayerToAddressRequestDto(addressLayer: AddressLayer): AddressRequestDto {
+                return AddressRequestDto(points = addressLayer.points,
+                zoom = addressLayer.zoom,
+                acceptLanguage = addressLayer.acceptLanguage)
+
     }
 
 

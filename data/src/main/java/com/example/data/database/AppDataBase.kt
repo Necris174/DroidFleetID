@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.data.model.DeviceEntityDbModel
 
-@Database(entities = [DeviceEntityDbModel::class], version = 1, exportSchema = false)
+@Database(entities = [DeviceEntityDbModel::class], version = 2, exportSchema = false)
 abstract class AppDataBase : RoomDatabase() {
     companion object {
 

@@ -76,7 +76,6 @@ class NavigationFragment : Fragment() {
             refreshToken = it.getString(REFRESH_TOKEN).toString()
             expire = it.getLong(EXPIRES).toInt()
         }
-        Log.d("DROIDFLEETID11", "Параметры: $accessToken $refreshToken $expire")
         viewModel.isUserLoggedIn = true
         viewModel.loadAllSettings(AuthorizationProperties(accessToken,expire,refreshToken))
 

@@ -11,5 +11,6 @@ data class DeviceEntity(
     var status: String? = null,
     var descr: String? = null,
     var data: List<Datum>,
-    var sensors: List<Sensor>? = null
+    var sensors: List<Sensor>? = null,
+    var address: String? = null
 )
