@@ -40,7 +40,7 @@ class DeviceListFragment : Fragment() {
         binding.rvDeviceList.itemAnimator = null
         binding.rvDeviceList.adapter = adapter
         adapter.onDeviceItemClickListener = {
-            viewModel.selectDevice(it)
+            viewModel.selectedDevice(it)
         }
     }
 

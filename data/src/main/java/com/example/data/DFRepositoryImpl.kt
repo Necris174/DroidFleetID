@@ -6,15 +6,10 @@ import androidx.lifecycle.Transformations
 import com.example.data.database.DroidFleetDao
 import com.example.data.mapper.AuthorizationMapper
 import com.example.data.mapper.DeviceMapper
-import com.example.data.model.DeviceRequestItem
-import com.example.data.model.SignInRequest
-import com.example.data.model.TailsDto
+import com.example.data.model.*
 import com.example.data.network.ApiService
 import com.example.domain.DFRepository
-import com.example.domain.entity.AuthorizationProperties
-import com.example.domain.entity.DeviceEntity
-import com.example.domain.entity.DeviceRequest
-import com.example.domain.entity.Tails
+import com.example.domain.entity.*
 import javax.inject.Inject
 
 class DFRepositoryImpl @Inject constructor(
@@ -47,13 +42,19 @@ class DFRepositoryImpl @Inject constructor(
     override fun getDeviceEntityList(): LiveData<List<DeviceEntity>> = Transformations.map(
         droidFleetDao.getDeviceEntityList()
     ){
-        Log.d("Dbmodel", it.toString())
         deviceMapper.deviceEntitiesDbModelListToDeviceEntityList(it)
     }
 
     override suspend fun deleteEntityList() {
         Log.d("DELETE", "DELETE ALL")
         droidFleetDao.deleteEntityList()
+    }
+
+    override suspend fun getAddressLayer(accessToken: String, addressLayer: AddressLayer): List<Address> {
+        return deviceMapper.mapAddressLayerDtoToAddress(
+            apiService.getAddress(
+                authorization = "Bearer $accessToken",
+                body = deviceMapper.mapAddressLayerToAddressRequestDto(addressLayer)))
     }
 
 

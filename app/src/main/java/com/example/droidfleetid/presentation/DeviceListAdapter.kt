@@ -27,13 +27,21 @@ class DeviceListAdapter : ListAdapter<DeviceEntity, DeviceListViewHolder>(Device
 
     override fun onBindViewHolder(holder: DeviceListViewHolder, position: Int) {
         val deviceItem = getItem(position)
+        if (deviceItem.data.isEmpty()){
+            holder.address.text = "В черном списке"
+        } else {
+            holder.itemView.setOnClickListener {
+                onDeviceItemClickListener?.invoke(deviceItem)
+            }
+            holder.address.text = deviceItem.address
+        }
+
 
         holder.deviceModel.text = deviceItem.model
         holder.deviceNumber.text = deviceItem.number
         if(deviceItem.data.isNotEmpty()) {
 
             val time = deviceItem.data.first().time
-            Log.d("DATUMTIME", "$time" )
             if (time != null) {
                 when (time) {
                     in 0..60 -> {
@@ -76,9 +84,7 @@ class DeviceListAdapter : ListAdapter<DeviceEntity, DeviceListViewHolder>(Device
             holder.deviceSpeed.text = deviceItem.data.first().coords.speed.toString()
         }
 
-        holder.itemView.setOnClickListener {
-            onDeviceItemClickListener?.invoke(deviceItem)
-        }
+
     }
 
 

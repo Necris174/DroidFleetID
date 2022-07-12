@@ -6,24 +6,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.*
-import com.example.domain.entity.AuthorizationProperties
-import com.example.domain.entity.DeviceEntity
-import com.example.domain.entity.DeviceRequest
-import com.example.domain.entity.Tails
+import com.example.domain.entity.*
 import kotlinx.coroutines.*
+import okhttp3.internal.wait
 import javax.inject.Inject
 
 class DroidFleetViewModel @Inject constructor(
-    private val getDeviceEntityListUseCase: GetDeviceEntityListUseCase,
+    getDeviceEntityListUseCase: GetDeviceEntityListUseCase,
     private val getSettingsUseCase: GetSettingsUseCase,
     private val getTailsUseCase: GetTailsUseCase,
     private val storeDeviceEntitiesUseCase: StoreDeviceEntitiesUseCase,
-    private val deleteEntityListUseCase: DeleteEntityListUseCase
+    private val deleteEntityListUseCase: DeleteEntityListUseCase,
+    private val getAddressLayerUseCase: AddressLayerUseCase
    ) : ViewModel() {
 
     private var device: DeviceEntity? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
-        e.message?.let { Log.d("Exception Login:", it) }
+        e.message?.let { Log.d("Exception: ", it) }
     }
      var isUserLoggedIn = true
      private val _selectedDevice = MutableLiveData<SelectedDevice<DeviceEntity>>()
@@ -36,7 +35,6 @@ class DroidFleetViewModel @Inject constructor(
     fun loadAllSettings(authorizationProperties: AuthorizationProperties) {
 
         viewModelScope.launch(exceptionHandler+Dispatchers.IO) {
-            coroutineScope {
                 while (isUserLoggedIn) {
                     try {
                         //Loading basic device information
@@ -50,6 +48,7 @@ class DroidFleetViewModel @Inject constructor(
                         val tailsDtoList =
                             getTails(deviceRequest, authorizationProperties.accessToken)
 
+
                         for (i in tailsDtoList) {
                             for (y in deviceEntityList) {
                                 if (i.imei == y.imei) {
@@ -60,10 +59,16 @@ class DroidFleetViewModel @Inject constructor(
                                 }
                             }
                         }
-                        val deviceTracking = deviceEntityList.find { it.imei == device?.imei }
-                        if (deviceTracking != null) {
-                            selectDevice(deviceTracking)
+
+                        if(device!=null) {
+                            val deviceTracking = deviceEntityList.find { it.imei == device?.imei }
+                            if (deviceTracking != null) {
+                                selectedDevice(deviceTracking)
+                            }
                         }
+                        //Getting address
+                        getAddress(deviceEntityList, authorizationProperties.accessToken)
+
                         // Storing the device list
                         storeDeviceEntitiesUseCase(deviceEntityList)
 
@@ -76,10 +81,32 @@ class DroidFleetViewModel @Inject constructor(
                     }
                     delay(20000)
                 }
-            }
         }
     }
 
+    private suspend fun getAddress(deviceEntityList: List<DeviceEntity>, accessToken: String) {
+        deviceEntityList.map {
+            if (it.data.isNotEmpty()) {
+                try {
+                    val addressList = getAddressLayerUseCase(
+                        accessToken, AddressLayer(
+                            listOf(
+                                AddressPoint(
+                                    it.data.first().coords.lat,
+                                    it.data.first().coords.lon
+                                )
+                            ), 10, "ru"
+                        )
+                    )
+                    with(addressList.first()){
+                        it.address = "$country $city $cityDistrict \n$road $houseNumber $suburb"
+                    }
+                }catch (e: Exception){
+                    Log.d("tailsDTO", "Ошибка: $e")
+                }
+            }
+        }
+    }
 
 
     private suspend fun loadSettings(accessToken: String): List<DeviceEntity> {
@@ -93,7 +120,7 @@ class DroidFleetViewModel @Inject constructor(
         return getTailsUseCase(deviceEntity, accessToken)
     }
 
-    fun selectDevice(device: DeviceEntity) {
+    fun selectedDevice(device: DeviceEntity) {
         _selectedDevice.postValue(SelectedDevice.Device(device))
     }
 
