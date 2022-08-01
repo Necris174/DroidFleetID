@@ -117,7 +117,7 @@ class DeviceMapper @Inject constructor() {
     }
 
     fun mapAddressLayerDtoToAddress(address: List<AddressLayerDto>): List<Address> {
-        Log.d("ADDRESS", address.first().displayName.toString())
+        Log.d("ADDRESS", address.first().address.toString())
                     return   address.map {getAddress(it) }
     }
 

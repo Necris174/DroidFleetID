@@ -18,7 +18,11 @@
         android:id="@+id/reportFragment"
         android:name="com.example.droidfleetid.presentation.fragments.ReportFragment"
         android:label="Отчеты"
-        tools:layout="@layout/fragment_report" />
+        tools:layout="@layout/fragment_report" >
+        <action
+            android:id="@+id/action_reportFragment_to_fragmentReportDeviceList"
+            app:destination="@id/fragmentReportDeviceList" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.droidfleetid.presentation.fragments.SettingsFragment"
@@ -28,4 +32,9 @@
         android:name="com.example.droidfleetid.presentation.fragments.MapsFragment"
         android:label="Карта"
         tools:layout="@layout/fragment_maps" />
+    <fragment
+        android:id="@+id/fragmentReportDeviceList"
+        android:name="com.example.droidfleetid.FragmentReportDeviceList"
+        android:label="fragment_report_device_list"
+        tools:layout="@layout/fragment_report_device_list" />
 </navigation>

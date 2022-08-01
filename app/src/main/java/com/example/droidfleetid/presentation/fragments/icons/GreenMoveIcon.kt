@@ -7,7 +7,7 @@ import android.graphics.Paint
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
-class GreenMoveIcon(val widthDefault: Int, val heightDefault: Int) {
+class GreenMoveIcon(private val widthDefault: Int, private val heightDefault: Int) {
     private var radius = widthDefault / 2f
     private var margin5 = widthDefault*0.05f
     private var margin20 = widthDefault*0.25f

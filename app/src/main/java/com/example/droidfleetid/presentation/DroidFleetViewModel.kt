@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.*
 import com.example.domain.entity.*
 import kotlinx.coroutines.*
-import okhttp3.internal.wait
 import javax.inject.Inject
 
 class DroidFleetViewModel @Inject constructor(
@@ -18,14 +17,14 @@ class DroidFleetViewModel @Inject constructor(
     private val storeDeviceEntitiesUseCase: StoreDeviceEntitiesUseCase,
     private val deleteEntityListUseCase: DeleteEntityListUseCase,
     private val getAddressLayerUseCase: AddressLayerUseCase
-   ) : ViewModel() {
+) : ViewModel() {
 
     private var device: DeviceEntity? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, e ->
         e.message?.let { Log.d("Exception: ", it) }
     }
-     var isUserLoggedIn = true
-     private val _selectedDevice = MutableLiveData<SelectedDevice<DeviceEntity>>()
+    var isUserLoggedIn = true
+    private val _selectedDevice = MutableLiveData<SelectedDevice<DeviceEntity>>()
     val selectedDevice: LiveData<SelectedDevice<DeviceEntity>>
         get() = _selectedDevice
 
@@ -33,54 +32,64 @@ class DroidFleetViewModel @Inject constructor(
     val deviceEntityListLD = getDeviceEntityListUseCase()
 
     fun loadAllSettings(authorizationProperties: AuthorizationProperties) {
-
-        viewModelScope.launch(exceptionHandler+Dispatchers.IO) {
-                while (isUserLoggedIn) {
-                    try {
-                        //Loading basic device information
-                        val deviceEntityList = loadSettings(authorizationProperties.accessToken)
-                        //Getting account_id and imei
-                        val deviceRequest = mutableListOf<DeviceRequest>()
-                        deviceEntityList.map {
-                            deviceRequest.add(DeviceRequest(it.account_id, it.imei))
-                        }
-                        //Getting tails
-                        val tailsDtoList =
-                            getTails(deviceRequest, authorizationProperties.accessToken)
-
-
-                        for (i in tailsDtoList) {
-                            for (y in deviceEntityList) {
-                                if (i.imei == y.imei) {
-                                    y.data = i.datumDto!!
-                                    y.sensors = i.sensors
-                                    y.status = i.status
-                                    y.descr = i.descr
-                                }
-                            }
-                        }
-
-                        if(device!=null) {
-                            val deviceTracking = deviceEntityList.find { it.imei == device?.imei }
-                            if (deviceTracking != null) {
-                                selectedDevice(deviceTracking)
-                            }
-                        }
-                        //Getting address
-                        getAddress(deviceEntityList, authorizationProperties.accessToken)
-
-                        // Storing the device list
-                        storeDeviceEntitiesUseCase(deviceEntityList)
-
-                        if(!isUserLoggedIn){
-                            deleteEntityList()
-                        }
-
-                    } catch (e: Exception) {
-                        Log.d("tailsDTO", "Ошибка: $e")
+        Log.d("VIEWMODEL", "MY VIEWMODEL RELOAD" )
+        viewModelScope.launch(exceptionHandler + Dispatchers.IO) {
+            while (isUserLoggedIn) {
+                try {
+                    //Loading basic device information
+                    val deviceEntityList = loadSettings(authorizationProperties.accessToken)
+                    //Getting account_id and imei
+                    val deviceRequest = mutableListOf<DeviceRequest>()
+                    deviceEntityList.map {
+                        deviceRequest.add(DeviceRequest(it.account_id, it.imei))
                     }
-                    delay(20000)
+                    //Getting tails
+                    val tailsList =
+                        getTails(deviceRequest, authorizationProperties.accessToken)
+
+                    deviceEntityList.map { device ->
+                        tailsList.map {
+                            if (device.imei == it.imei) {
+                                device.data = it.datumDto
+                                device.sensors = it.sensors
+                                device.status = it.status
+                                device.descr = it.descr
+                            }
+                        }
+                    }
+//
+//                        for (i in tailsList) {
+//                            for (y in deviceEntityList) {
+//                                if (i.imei == y.imei) {
+//                                    y.data = i.datumDto
+//                                    y.sensors = i.sensors
+//                                    y.status = i.status
+//                                    y.descr = i.descr
+//                                }
+//                            }
+//                        }
+
+                    if (device != null) {
+                        val deviceTracking = deviceEntityList.find { it.imei == device?.imei }
+                        if (deviceTracking != null) {
+                            selectedDevice(deviceTracking)
+                        }
+                    }
+                    //Getting address
+                    getAddress(deviceEntityList, authorizationProperties.accessToken)
+
+                    // Storing the device list
+                    storeDeviceEntitiesUseCase(deviceEntityList)
+
+                    if (!isUserLoggedIn) {
+                        deleteEntityList()
+                    }
+
+                } catch (e: Exception) {
+                    Log.d("tailsDTO", "Ошибка: $e")
                 }
+                delay(20000)
+            }
         }
     }
 
@@ -98,10 +107,11 @@ class DroidFleetViewModel @Inject constructor(
                             ), 10, "ru"
                         )
                     )
-                    with(addressList.first()){
+                    // Log.d("ADDRESS", "$addressList")
+                    with(addressList.first()) {
                         it.address = "$country $city $cityDistrict \n$road $houseNumber $suburb"
                     }
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     Log.d("tailsDTO", "Ошибка: $e")
                 }
             }
@@ -132,8 +142,8 @@ class DroidFleetViewModel @Inject constructor(
         device = clickCount
     }
 
-    fun deleteEntityList (){
-        viewModelScope.launch(exceptionHandler+Dispatchers.IO) {
+    fun deleteEntityList() {
+        viewModelScope.launch(exceptionHandler + Dispatchers.IO) {
             deleteEntityListUseCase()
         }
 
