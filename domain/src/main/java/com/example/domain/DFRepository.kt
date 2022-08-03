@@ -2,6 +2,7 @@ package com.example.domain
 
 import androidx.lifecycle.LiveData
 import com.example.domain.entity.*
+import com.google.gson.JsonObject
 
 interface DFRepository {
 
@@ -20,5 +21,7 @@ interface DFRepository {
     suspend fun deleteEntityList()
 
     suspend fun getAddressLayer(accessToken: String ,addressLayer: AddressLayer): List<Address>
+
+    suspend fun getTrack(authorization: String, device_IMEI: String, account_id: String, date_from: String, date_to: String, shift_vars: String): JsonObject
 
 }

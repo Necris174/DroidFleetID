@@ -10,6 +10,7 @@ import com.example.data.model.*
 import com.example.data.network.ApiService
 import com.example.domain.DFRepository
 import com.example.domain.entity.*
+import com.google.gson.JsonObject
 import javax.inject.Inject
 
 class DFRepositoryImpl @Inject constructor(
@@ -56,6 +57,18 @@ class DFRepositoryImpl @Inject constructor(
                 authorization = "Bearer $accessToken",
                 body = deviceMapper.mapAddressLayerToAddressRequestDto(addressLayer)))
     }
+    override suspend fun getTrack (authorization: String, device_IMEI: String, account_id: String, date_from: String, date_to: String, shift_vars: String): JsonObject {
 
+        val jsonObject = apiService.getTrack(
+            authorization = authorization,
+            device_IMEI = device_IMEI,
+            account_id = account_id,
+            date_from = date_from,
+            date_to = date_to,
+            shift_vars = shift_vars)
+        Log.d("GETTRACK", jsonObject.toString())
+            return jsonObject
+
+    }
 
 }

@@ -21,7 +21,11 @@
         tools:layout="@layout/fragment_report" >
         <action
             android:id="@+id/action_reportFragment_to_fragmentReportDeviceList"
-            app:destination="@id/fragmentReportDeviceList" />
+            app:destination="@id/fragmentReportDeviceList"
+            app:popUpToInclusive="false" />
+        <argument
+            android:name="device"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -35,6 +39,12 @@
     <fragment
         android:id="@+id/fragmentReportDeviceList"
         android:name="com.example.droidfleetid.FragmentReportDeviceList"
-        android:label="fragment_report_device_list"
-        tools:layout="@layout/fragment_report_device_list" />
+        android:label="Список устройств"
+        tools:layout="@layout/fragment_report_device_list">
+        <action
+            android:id="@+id/action_fragmentReportDeviceList_to_reportFragment"
+            app:destination="@id/reportFragment"
+            app:popUpTo="@id/reportFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

@@ -11,6 +11,9 @@ import com.example.droidfleetid.presentation.fragments.DeviceListViewHolder
 class SelectedDeviceAdapter : ListAdapter<DeviceEntity, SelectedDeviceListViewHolder>(
     DeviceItemDiffCallback()
 ){
+
+    var onDeviceItemSelectedClickListener: ((DeviceEntity) -> Unit)? = null
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -21,6 +24,10 @@ class SelectedDeviceAdapter : ListAdapter<DeviceEntity, SelectedDeviceListViewHo
 
     override fun onBindViewHolder(holder: SelectedDeviceListViewHolder, position: Int) {
         holder.bind(getItem(position))
+
+        holder.itemView.setOnClickListener {
+            onDeviceItemSelectedClickListener?.invoke(getItem(position))
+        }
     }
 
 }

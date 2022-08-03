@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.*
 import com.example.domain.entity.*
+import com.google.gson.JsonObject
 import kotlinx.coroutines.*
+import java.util.*
 import javax.inject.Inject
 
 class DroidFleetViewModel @Inject constructor(
@@ -16,7 +18,8 @@ class DroidFleetViewModel @Inject constructor(
     private val getTailsUseCase: GetTailsUseCase,
     private val storeDeviceEntitiesUseCase: StoreDeviceEntitiesUseCase,
     private val deleteEntityListUseCase: DeleteEntityListUseCase,
-    private val getAddressLayerUseCase: AddressLayerUseCase
+    private val getAddressLayerUseCase: AddressLayerUseCase,
+    private val getTrackUseCase: GetTrackUseCase
 ) : ViewModel() {
 
     private var device: DeviceEntity? = null
@@ -28,10 +31,25 @@ class DroidFleetViewModel @Inject constructor(
     val selectedDevice: LiveData<SelectedDevice<DeviceEntity>>
         get() = _selectedDevice
 
+    private val _calendarBegin = MutableLiveData<Calendar>()
+    val calendarBegin: LiveData<Calendar>
+        get() = _calendarBegin
+
+    private val _calendarEnd = MutableLiveData<Calendar>()
+    val calendarEnd: LiveData<Calendar>
+        get() = _calendarEnd
+
+    private val _selectedReportDevice = MutableLiveData<DeviceEntity>()
+    val selectedReportDevice: LiveData<DeviceEntity>
+        get() = _selectedReportDevice
+
     // Getting deviceEntity from the Database
     val deviceEntityListLD = getDeviceEntityListUseCase()
+    lateinit var authorizationProperties: AuthorizationProperties
+
 
     fun loadAllSettings(authorizationProperties: AuthorizationProperties) {
+        this.authorizationProperties = authorizationProperties
         Log.d("VIEWMODEL", "MY VIEWMODEL RELOAD" )
         viewModelScope.launch(exceptionHandler + Dispatchers.IO) {
             while (isUserLoggedIn) {
@@ -57,18 +75,6 @@ class DroidFleetViewModel @Inject constructor(
                             }
                         }
                     }
-//
-//                        for (i in tailsList) {
-//                            for (y in deviceEntityList) {
-//                                if (i.imei == y.imei) {
-//                                    y.data = i.datumDto
-//                                    y.sensors = i.sensors
-//                                    y.status = i.status
-//                                    y.descr = i.descr
-//                                }
-//                            }
-//                        }
-
                     if (device != null) {
                         val deviceTracking = deviceEntityList.find { it.imei == device?.imei }
                         if (deviceTracking != null) {
@@ -146,7 +152,21 @@ class DroidFleetViewModel @Inject constructor(
         viewModelScope.launch(exceptionHandler + Dispatchers.IO) {
             deleteEntityListUseCase()
         }
+    }
 
+     suspend fun getTrack(imei: String, accountId: String, dateFrom: String, dateTo: String, shiftVars: String) :JsonObject {
+         Log.d("tailsDTO", "Ошибка: ${authorizationProperties.accessToken}")
+        return getTrackUseCase(authorizationProperties.accessToken, imei, accountId, dateFrom, dateTo, shiftVars)
+
+    }
+
+    fun selectedReportDevice (device: DeviceEntity) {
+        _selectedReportDevice.value = device
+    }
+
+    fun saveCalendar(calendarBegin: Calendar, calendarEnd: Calendar) {
+        _calendarEnd.value = calendarEnd
+        _calendarBegin.value = calendarBegin
     }
 
 }

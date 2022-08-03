@@ -35,6 +35,7 @@ class DeviceListFragment : Fragment() {
         }
     }
 
+
     private fun setupRecyclerView() {
         adapter = DeviceListAdapter()
         binding.rvDeviceList.itemAnimator = null
