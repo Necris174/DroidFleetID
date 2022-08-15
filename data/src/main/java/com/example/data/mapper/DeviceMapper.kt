@@ -34,6 +34,7 @@ class DeviceMapper @Inject constructor() {
         val blackDate = format.parse(device.black_date)
         val licenseBlackDate = format.parse(device.license_black_date)
         val currentDate = Date()
+
         if (blackDate != null&&licenseBlackDate != null) {
                 return if (device.is_licensed && device.is_unlimited) {
                     blackDate > currentDate

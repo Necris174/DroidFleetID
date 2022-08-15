@@ -23,7 +23,10 @@ class SelectedDeviceAdapter : ListAdapter<DeviceEntity, SelectedDeviceListViewHo
     }
 
     override fun onBindViewHolder(holder: SelectedDeviceListViewHolder, position: Int) {
-        holder.bind(getItem(position))
+
+        val item = getItem(position)
+            holder.binding.selectName.text = item.model
+            holder.binding.selectNumber.text = item.number
 
         holder.itemView.setOnClickListener {
             onDeviceItemSelectedClickListener?.invoke(getItem(position))
