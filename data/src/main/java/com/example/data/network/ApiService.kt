@@ -50,7 +50,7 @@ interface ApiService {
                           @Query(ACCOUNT_ID) account_id: String,
                           @Query(DATE_FROM) date_from: String,
                           @Query(DATE_TO) date_to: String,
-                          @Query(SHIFT_VARS) shift_vars: String,
+                          @Query(SHIFT_VARS) shift_vars: String
                   ): JsonObject
 
     @POST("geocoding/reverse")

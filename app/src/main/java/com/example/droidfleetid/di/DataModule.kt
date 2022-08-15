@@ -3,6 +3,7 @@ package com.example.droidfleetid.di
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import androidx.security.crypto.MasterKeys
 import com.example.data.DFRepositoryImpl
 import com.example.data.database.AppDataBase
@@ -40,13 +41,10 @@ interface DataModule {
         @Provides
         @ApplicationScope
         fun provideSharedPreference(application: Application): SharedPreferences {
-            val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-            return EncryptedSharedPreferences.create(
-                "PreferencesFilename",
-                masterKeyAlias,
-                application,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM)
+            val masterKey = MasterKey.Builder(application)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build()
+            return EncryptedSharedPreferences.create(application,"SharedPref",masterKey,EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM)
         }
 
     }

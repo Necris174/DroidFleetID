@@ -28,24 +28,29 @@ class MainActivity : AppCompatActivity() {
         val accessToken = sharedPreferences.getString("accessToken", "")
         val expires = sharedPreferences.getLong("expires", 0)
         val refreshToken = sharedPreferences.getString("refreshToken", "")
-        if (accessToken != null&& expires-System.currentTimeMillis()>0) {
-
-         supportFragmentManager.popBackStack()
-            supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.slide_in,R.anim.fade_out,R.anim.fade_in,R.anim.slide_out)
-                .replace(
-                    R.id.droid_fleet_container,
-                    NavigationFragment.newInstance(
-                       accessToken,
-                       refreshToken,
-                        expires
+        if (savedInstanceState == null) {
+            if (accessToken != null && expires - System.currentTimeMillis() > 0) {
+                supportFragmentManager.popBackStack()
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                        R.anim.slide_in,
+                        R.anim.fade_out,
+                        R.anim.fade_in,
+                        R.anim.slide_out
                     )
-                ).commit()
-        } else {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.droid_fleet_container, LoginFragment()).commit()
+                    .replace(
+                        R.id.droid_fleet_container,
+                        NavigationFragment.newInstance(
+                            accessToken,
+                            refreshToken,
+                            expires
+                        )
+                    ).commit()
+            } else {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.droid_fleet_container, LoginFragment()).commit()
+            }
         }
-
     }
 }
 

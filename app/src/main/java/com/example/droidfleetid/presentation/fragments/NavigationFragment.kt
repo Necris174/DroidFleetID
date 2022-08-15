@@ -115,5 +115,4 @@ class NavigationFragment : Fragment() {
         return root
     }
 
-
 }

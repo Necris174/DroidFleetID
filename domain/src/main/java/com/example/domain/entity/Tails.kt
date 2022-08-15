@@ -5,6 +5,6 @@ var accountId: String? = null,
 var imei: String? = null,
 var status: String? = null,
 var descr: String? = null,
-var datumDto: List<Datum>?  = null,
+var datumDto: List<Datum> ,
 var sensors: List<Sensor>? = null)
 
